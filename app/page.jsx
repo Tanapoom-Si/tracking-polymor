@@ -329,9 +329,18 @@ export default function HomePage() {
     <div className="shell">
       <aside className="sidebar">
         <section className="brand">
-          <div className="mark" aria-hidden="true" />
+          <div className="mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" role="img" focusable="false">
+              <path d="M10 18c11-9 22-9 33 0 5 4 9 5 13 3" />
+              <path d="M8 32c12-8 23-8 34 0 6 4 10 5 15 2" />
+              <path d="M10 46c10-7 21-7 32 0 5 3 9 4 14 1" />
+              <circle cx="17" cy="14" r="3" />
+              <circle cx="33" cy="30" r="3" />
+              <circle cx="48" cy="48" r="3" />
+            </svg>
+          </div>
           <div>
-            <h1>AquaTrace Fiber Intelligence</h1>
+            <h1>Track Fiber</h1>
             <p>ระบบวิเคราะห์ย้อนกลับ Defect จาก Flat screen ไปหา Can และช่วงเวลา Spinning</p>
           </div>
         </section>
@@ -362,7 +371,7 @@ export default function HomePage() {
       <main className="main">
         <header className="topbar">
           <div>
-            <h2>AquaTrace Defect Dashboard</h2>
+            <h2>Defect Dashboard</h2>
             <p>ระบุเวลาเจอ Defect หลัง Drawing แล้วระบบจะเทียบกับลำดับ Can จาก Spinning เพื่อหาแหล่งที่ควรตรวจย้อนกลับ</p>
           </div>
           <div className="actions">
