@@ -9,7 +9,10 @@ AquaTrace Fiber Intelligence เป็นเว็บ dashboard สำหรั�
 - กรอกข้อมูล Brand, Lot, Bale, เวลาเริ่ม Drawing และเวลาเจอ Defect
 - อ่านข้อมูล Doffing Record แบบ CSV ต่อบรรทัด
 - อ่านข้อมูล FS Oil Dispersion / Flat screen rows เพื่อเลือก defect ที่พบจริง
-- คำนวณ Can ที่น่าสงสัยจากลำดับการใช้ Can ใน Drawing
+- คำนวณ Can ที่น่าสงสัยจากข้อมูล Doffing และตำแหน่งเส้นใยในถัง
+- ระบุชั้นในถัง, ช่วงเวลา Spinning ของชั้นนั้น และช่วงจากปากถังที่ควรคัดออก
+- วิเคราะห์จุดกำเนิดความผิดปกติว่าเอนเอียงไปทาง `Spinning / Can`, `Drawing` หรือ `Mixed`
+- เก็บ Drawing condition เช่น stop/start, tension, guide, roller และ cutter เพื่อช่วยแยกสาเหตุ
 - ให้คะแนน Trace Confidence และ Risk level
 - แสดงช่วงเวลา Spinning ที่ควรเปิดบันทึกย้อนกลับ
 - แสดง checklist ลำดับการตรวจสอบย้อนหลัง
@@ -100,12 +103,27 @@ No, Bale No., Time, Bundle, Twist, Tangle, Defect, Long filament, Remark
 
 ## Logic การให้คะแนนโดยย่อ
 
+### Origin Analysis
+
+- ระบบให้คะแนน `Spinning / Can risk` และ `Drawing risk` แยกกัน
+- ถ้า defect เกิดหลาย Can หรือหลายตำแหน่งเวลาใกล้กัน จะเพิ่ม Drawing risk
+- ถ้ามี stop/start, tension swing, guide, roller หรือ cutter ผิดปกติ จะเพิ่ม Drawing risk
+- ถ้า defect เกิดเด่นเฉพาะ Can/ตำแหน่งเดียว หรือ Doffing record มี remark/fluff/BCP จะเพิ่ม Spinning / Can risk
+- ผลลัพธ์จะแสดง `Likely Origin` และจุดตรวจอันดับแรก
+
+### Can Layer Trace
+
+- ถังของแบรนด์เดียวกันถูกมองว่าเดินเข้า Drawing พร้อมกัน
+- Drawing ดึงเส้นใยจากปากถังด้านบนลงด้านล่าง
+- Spinning/Doffing ลงเส้นใยในถังจากล่างขึ้นบน
+- ระบบจึงแปลงเวลาที่เจอ defect เป็นเปอร์เซ็นต์ความลึกจากปากถัง แล้วกลับลำดับเพื่อหา `ชั้น doffing จากล่าง`
+- `เวลา doffing ต่อ 1 ชั้น` ใช้คำนวณช่วงเวลา Spinning ของชั้นนั้น
+- การเคลื่อนที่ของถังระหว่าง doffing เป็น context ของ process เพื่อให้เส้นใยเรียงตัวและไม่พันกัน แต่ไม่แยกผลลงถึงระดับทิศใน dashboard
 - เริ่มต้นที่ 25 คะแนนต่อ Can
-- ถ้าเวลาเจอ defect อยู่ในช่วงใช้ Can นั้นใน Drawing เพิ่ม 55
-- ถ้าอยู่ในช่วงคาบเกี่ยวก่อน/หลัง Can เพิ่ม 25
+- ถ้าเวลาเจอ defect อยู่ในช่วงใช้ถังใน Drawing เพิ่ม 55
+- ถ้าอยู่ในช่วงเผื่อคัดออกก่อน-หลัง defect เพิ่ม 15
 - ถ้า note มีคำเช่น `unstable`, `remark`, `change`, `BCP`, `fluff`, `NG` เพิ่ม 10
 - ถ้า note มีคำเช่น `swing`, `wrapping`, `guide`, `ผิด`, `tension`, `ปัญหา`, `คราบ`, `พัน` เพิ่ม 12
-- หักคะแนนตามระยะห่างจากกลางช่วงการใช้ Can
 - ความรุนแรง `medium` เพิ่ม confidence 6, `high` เพิ่ม 12
 
 ## หมายเหตุการพัฒนา
