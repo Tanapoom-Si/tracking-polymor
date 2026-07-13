@@ -541,7 +541,7 @@ export default function HomePage() {
           <button className={activeView === "origin" ? "active" : ""} type="button" onClick={() => setActiveView("origin")}>วิเคราะห์สาเหตุ</button>
           <button className={activeView === "trace" ? "active" : ""} type="button" onClick={() => setActiveView("trace")}>วิเคราะห์ตำแหน่ง</button>
           <button className={activeView === "timeline" ? "active" : ""} type="button" onClick={() => setActiveView("timeline")}>ลำดับการตรวจสอบ</button>
-          <button className={activeView === "matrix" ? "active" : ""} type="button" onClick={() => setActiveView("matrix")}>คู่มือการใช้งาน</button>
+          <button className={activeView === "matrix" ? "active" : ""} type="button" onClick={() => setActiveView("matrix")}>คู่มืออ้างอิง</button>
         </nav>
 
         <p className="side-note">
