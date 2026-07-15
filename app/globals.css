@@ -414,8 +414,8 @@ p {
 
 .form {
   display: grid;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 18px;
+  margin-top: 14px;
 }
 
 .layout.single .form {
@@ -424,9 +424,229 @@ p {
 }
 
 .layout.single .form > .quick-guide,
+.layout.single .form > .two,
+.layout.single .form > .field,
+.layout.single .form > .mode-switch,
+.layout.single .form > .form-card,
 .layout.single .form > .advanced,
 .layout.single .form > .btn {
   grid-column: 1 / -1;
+}
+
+.mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mode-switch button {
+  display: grid;
+  gap: 6px;
+  min-height: 84px;
+  padding: 14px 16px;
+  border: 1px solid #cddfeb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+}
+
+.mode-switch button:hover {
+  border-color: #9fc8e2;
+  background: #f8fcff;
+}
+
+.mode-switch button.active {
+  border-color: var(--brand);
+  background: #eef7fd;
+  box-shadow: 0 0 0 3px rgba(92, 166, 214, 0.12);
+}
+
+.mode-switch strong {
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.mode-switch span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.calc-preview {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #d6e6f0;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+}
+
+.calc-preview.ready {
+  border-color: #9fc8e2;
+  background: #f8fcff;
+}
+
+.calc-preview > div:first-child {
+  display: grid;
+  gap: 6px;
+}
+
+.calc-preview span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.calc-preview strong {
+  color: var(--ink);
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.calc-preview p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.62;
+}
+
+.calc-preview-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.quick-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.calc-preview-metrics span {
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid #cddfeb;
+  border-radius: 8px;
+  background: #f6fbff;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.quick-result-grid span {
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid #cddfeb;
+  border-radius: 8px;
+  background: #f6fbff;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.calc-preview-metrics b,
+.quick-result-grid b {
+  color: var(--brand-dark);
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.form-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #cddfeb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+}
+
+.compact-card {
+  box-shadow: none;
+}
+
+.form-card-head {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e0edf5;
+}
+
+.form-card-head > span {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #e5f2fa;
+  color: var(--brand-dark);
+  font-weight: 850;
+  font-size: 0.86rem;
+}
+
+.form-card-head div {
+  display: grid;
+  gap: 3px;
+}
+
+.form-card-head strong {
+  color: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.form-card-head p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.58;
+}
+
+.record-helper {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #d7e8f2;
+  border-radius: 8px;
+  background: #f7fbfe;
+}
+
+.record-helper-head {
+  display: grid;
+  gap: 4px;
+}
+
+.record-helper-head strong {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.record-helper-head span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.record-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.record-grid label {
+  display: grid;
+  gap: 7px;
 }
 
 .field {
@@ -454,6 +674,13 @@ textarea {
   outline: none;
   font-size: 0.98rem;
   line-height: 1.45;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: #9fc8e2;
+  background: #ffffff;
 }
 
 textarea {
@@ -485,10 +712,10 @@ textarea:focus {
 
 .quick-guide {
   display: grid;
-  gap: 9px;
-  padding: 14px;
+  gap: 7px;
+  padding: 16px 18px;
   border-radius: 8px;
-  background: #eaf6fd;
+  background: #f6fbff;
   border: 1px solid #cddfeb;
   color: #24516f;
   font-size: 0.92rem;
@@ -497,12 +724,21 @@ textarea:focus {
 
 .quick-guide strong {
   color: var(--brand-dark);
+  font-size: 1rem;
+}
+
+.quick-guide span {
+  color: var(--muted);
 }
 
 .advanced {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #f8fafc;
+}
+
+.advanced.compact {
+  background: #fbfcfe;
 }
 
 .advanced summary {
@@ -533,6 +769,60 @@ textarea:focus {
   display: grid;
   gap: 16px;
   padding: 0 16px 16px;
+}
+
+.machine-guide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.machine-guide div {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #d9e7f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.machine-guide strong {
+  color: var(--brand-dark);
+  font-size: 0.9rem;
+}
+
+.machine-guide p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.formula-note {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid #d9e7f0;
+  border-radius: 8px;
+  background: #f6fbff;
+}
+
+.formula-note strong {
+  color: var(--brand-dark);
+  font-size: 0.92rem;
+}
+
+.formula-note span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.field-warning {
+  padding: 11px 13px;
+  border: 1px solid #e5cfcf;
+  border-radius: 8px;
+  background: #fff7f7;
+  color: #8a3f48;
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 .results {
@@ -809,6 +1099,22 @@ td {
   .layout.single .form {
     grid-template-columns: 1fr;
   }
+
+  .calc-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-switch {
+    grid-template-columns: 1fr;
+  }
+
+  .machine-guide {
+    grid-template-columns: 1fr;
+  }
+
+  .record-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -825,6 +1131,15 @@ td {
   }
 
   .two {
+    grid-template-columns: 1fr;
+  }
+
+  .calc-preview-metrics,
+  .quick-result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .record-grid {
     grid-template-columns: 1fr;
   }
 

@@ -3,64 +3,51 @@
 import { useMemo, useState } from "react";
 
 const defaultForm = {
-  brand: "SD 0.6 1200A",
-  lot: "QR-25-F3-31 / QR-CM-F3-26",
-  smNo: "4",
-  creelNo: "12",
-  dfNo: "4K-N",
-  doffTimeHeader: "30",
-  totalTowCan: "16",
-  operationPosition: "21",
-  totalSpNo: "304",
-  minMaxSps: "301-361",
-  polymerFeed: "5.99",
-  actualSpinneret: "371 / 3",
+  brand: "",
+  lot: "",
+  smNo: "",
+  creelNo: "",
+  dfNo: "",
+  doffTimeHeader: "",
+  totalTowCan: "",
+  operationPosition: "",
+  totalSpNo: "",
+  minMaxSps: "",
+  polymerFeed: "",
+  actualSpinneret: "",
   defect: "bundle",
   severity: "medium",
-  drawingLine: "1K",
-  spinningLine: "DF 4K-N",
-  baleNo: "1",
-  testTime: "08:10",
-  drawingStart: "2026-07-06T12:00",
-  defectTime: "2026-07-06T13:25",
-  canUseMinutes: "35",
-  blendLag: "8",
-  layerMinutes: "2",
+  drawingLine: "",
+  spinningLine: "",
+  baleNo: "",
+  testTime: "",
+  productionDate: "",
+  drawingStart: "",
+  defectTime: "",
+  canUseMinutes: "",
+  blendLag: "",
+  layerMinutes: "",
+  drawLayerMinutes: "",
   affectedScope: "single",
   drawingStopStart: "no",
   drawingTension: "normal",
   drawingGuide: "normal",
   drawingRoller: "normal",
   drawingCutter: "normal",
-  drawingNote: "ไม่พบ stop/start หรือ tension swing ชัดเจนก่อนเจอ defect",
-  doffingRows: `1,2026-07-06,03:31,1,755,21-22,1A,30,ok,AM,normal
-2,2026-07-06,04:06,2,051,21-23,1A,30,ok,Operator,normal
-3,2026-07-06,04:32,3,998,23-24,1A,30,ok,Operator,normal
-4,2026-07-06,05:03,,192,24-22,1A,30,ok,Operator,BCP
-5,2026-07-06,05:33,4,554,21-21,1A,30,ok,Operator,fiber unstable
-6,2026-07-06,06:04,5,S-076,21-21,1A,30,ok,Operator,normal
-7,2026-07-06,06:30,6,021,21-24,1A,30,ok,Operator,normal
-8,2026-07-06,07:00,7,402,24-24,1A,30,ok,Operator,normal
-9,2026-07-06,07:31,,036,24-23,1A,30,ok,Operator,change can
-10,2026-07-06,08:02,8,S-003,23-23,1A,30,ok,Operator,normal
-11,2026-07-06,08:33,,401,23-23,1A,30,ok,Operator,remark
-12,2026-07-06,09:06,9,062,22-24,1A,30,ok,Operator,normal`,
-  cans: `CAN-A01,2026-07-06T06:10,2026-07-06T06:45,UDY ปกติ
-CAN-A02,2026-07-06T06:45,2026-07-06T07:20,tension swing ตอนท้าย
-CAN-A03,2026-07-06T07:20,2026-07-06T07:55,มี wrapping ที่ guide
-CAN-A04,2026-07-06T07:55,2026-07-06T08:30,ปกติ`,
-  fsRows: `1,1,08:10,0,0,0,0,0,#6
-2,1,08:10,0,0,0,0,0,#3
-3,1,08:10,0,0,0,0,0,#6
-4,1,08:10,0,0,0,0,0,#3
-5,1,08:10,0,0,0,0,0,#6
-6,1,08:10,0,0,0,0,0,#3
-7,1,08:10,0,0,0,0,0,#6
-8,1,08:10,0,0,0,0,0,#6
-9,1,08:10,0,0,0,0,0,#6
-10,1,08:10,0,0,0,0,0,#6
-11,1,08:10,0,0,1,1,1,#6`,
-  note: "พบ Bundle และเส้นใยจับเป็นก้อนหลังเริ่มเดิน Drawing ประมาณ 1 ชั่วโมง 25 นาที"
+  drawingNote: "",
+  doffingRows: "",
+  cans: "",
+  fsRows: "",
+  note: ""
+};
+
+const defaultDoffingDraft = {
+  canNo: "",
+  day: "",
+  time: "",
+  position: "",
+  doffMinutes: "",
+  remark: ""
 };
 
 const sampleForm = {
@@ -69,13 +56,14 @@ const sampleForm = {
   lot: "DR-260706-05",
   defect: "tangle",
   severity: "high",
-  drawingLine: "Drawing Line 2",
+  drawingLine: "5KN",
   spinningLine: "Spinning Line B",
   drawingStart: "2026-07-06T12:00",
   defectTime: "2026-07-06T14:12",
   canUseMinutes: "42",
   blendLag: "10",
-  layerMinutes: "3",
+  layerMinutes: "1",
+  drawLayerMinutes: "10",
   affectedScope: "multiple",
   drawingStopStart: "yes",
   drawingTension: "swing",
@@ -88,6 +76,46 @@ CAN-B12,2026-07-06T07:22,2026-07-06T08:04,ปาก can มีเส้นล้
 CAN-B13,2026-07-06T08:04,2026-07-06T08:46,tension swing และ laydown ไม่เรียบ
 CAN-B14,2026-07-06T08:46,2026-07-06T09:28,ปกติ`,
   note: "Flat screen พบ Tangle ต่อเนื่องหลังเปลี่ยน Can ช่วงกลาง run ต้องย้อนดู Can ก่อนหน้าและ Can ปัจจุบัน"
+};
+
+const brandPresets = [
+  { brand: "SD 3.0 x 5 N(C)", baleNo: "1", drawingLine: "1KN", spinningLine: "SM-62", testTime: "08:10", productionDate: "2026-06-25" },
+  { brand: "SD 0.5 x 5 N(E)", baleNo: "106", drawingLine: "4KN", spinningLine: "SM-4", testTime: "09:48", productionDate: "2026-06-22" },
+  { brand: "SD 1.1 x 5 NU(E)", baleNo: "73", drawingLine: "5KN", spinningLine: "SM-5", testTime: "08:49", productionDate: "2026-06-22" },
+  { brand: "SD 1.1 x 5 NU(E)T", baleNo: "81", drawingLine: "5KN", spinningLine: "SM-5", testTime: "10:08", productionDate: "2026-06-25" },
+  { brand: "SDJC 1.5 x 5 N(E)", baleNo: "105", drawingLine: "6KN", spinningLine: "SM-62", testTime: "10:07", productionDate: "2026-06-22" },
+  { brand: "SDJC 2.0 x 5 N(E)", baleNo: "213", drawingLine: "6KN", spinningLine: "SM-62", testTime: "15:44", productionDate: "2026-06-28" },
+  { brand: "SD 1.1 x 5 NUK(C)", baleNo: "1", drawingLine: "7KN", spinningLine: "SM-5", testTime: "15:08", productionDate: "2026-06-23" }
+];
+const brandExamples = brandPresets.map((preset) => preset.brand);
+
+function normalizeBrandName(value) {
+  return (value || "")
+    .toUpperCase()
+    .replace(/[×＊*]/g, "X")
+    .replace(/\s+/g, "")
+    .replace(/X/g, "X")
+    .replace(/([A-Z])\(/g, "$1(")
+    .trim();
+}
+
+function findBrandPreset(value) {
+  const normalized = normalizeBrandName(value);
+  return brandPresets.find((item) => normalizeBrandName(item.brand) === normalized);
+}
+
+const spinningMachineOptions = ["SM-31", "SM-32", "SM-4", "SM-5", "SM-61", "SM-62"];
+const drawingMachineOptions = ["1KN", "3KS", "4KS", "4KN", "5KS", "5KN", "6KS", "6KN", "7KN"];
+const drawingToSpinningMap = {
+  "1KN": "SM-62",
+  "3KS": "SM-32",
+  "4KS": "SM-4",
+  "4KN": "SM-4",
+  "5KS": "SM-5",
+  "5KN": "SM-5",
+  "6KS": "SM-61",
+  "6KN": "SM-62",
+  "7KN": "SM-32"
 };
 
 const defectProfiles = {
@@ -176,6 +204,16 @@ function clamp(value, min, max) {
 
 function formatPercent(value) {
   return `${Math.round(value)}%`;
+}
+
+function formatMinutesValue(value) {
+  const numberValue = Number(value);
+  if (!Number.isFinite(numberValue)) return "-";
+  return Number.isInteger(numberValue) ? `${numberValue}` : `${numberValue.toFixed(1)}`;
+}
+
+function hasTraceableCanData(can) {
+  return Boolean(can && can.spinStart && can.spinEnd);
 }
 
 function parseCans(text) {
@@ -344,17 +382,18 @@ function analyzeOrigin(data, traced, profile) {
   };
 }
 
-function getCanSections(cans, drawingStart, defectTime, canUseMinutes, blendLag, layerMinutes) {
+function getCanSections(cans, drawingStart, defectTime, canUseMinutes, blendLag, layerMinutes, drawLayerMinutes) {
   const elapsed = Math.max(0, preciseMinutesBetween(drawingStart, defectTime));
-  const consumedRatio = clamp(elapsed / canUseMinutes, 0, 1);
-  const removeTopStartPct = clamp(((elapsed - blendLag) / canUseMinutes) * 100, 0, 100);
-  const removeTopEndPct = clamp(((elapsed + blendLag) / canUseMinutes) * 100, 0, 100);
 
   return cans.map((can, index) => {
     const fallbackDoffMinutes = can.spinStart && can.spinEnd ? preciseMinutesBetween(can.spinStart, can.spinEnd) : layerMinutes;
     const doffMinutes = Math.max(1, Number(can.doffMinutes) || fallbackDoffMinutes || layerMinutes);
     const layerCount = Math.max(1, Math.ceil(doffMinutes / layerMinutes));
-    const topLayer = clamp(Math.floor(consumedRatio * layerCount) + 1, 1, layerCount);
+    const effectiveCanUseMinutes = Math.max(canUseMinutes, layerCount * drawLayerMinutes);
+    const consumedRatio = clamp(elapsed / effectiveCanUseMinutes, 0, 1);
+    const removeTopStartPct = clamp(((elapsed - blendLag) / effectiveCanUseMinutes) * 100, 0, 100);
+    const removeTopEndPct = clamp(((elapsed + blendLag) / effectiveCanUseMinutes) * 100, 0, 100);
+    const topLayer = clamp(Math.floor(elapsed / drawLayerMinutes) + 1, 1, layerCount);
     const doffingLayer = layerCount - topLayer + 1;
     const sectionMinutes = layerMinutes;
     const sectionOffset = (doffingLayer - 1) * layerMinutes;
@@ -367,8 +406,10 @@ function getCanSections(cans, drawingStart, defectTime, canUseMinutes, blendLag,
       ...can,
       index,
       useStart: drawingStart,
-      useEnd: new Date(drawingStart.getTime() + canUseMinutes * 60000),
+      useEnd: new Date(drawingStart.getTime() + effectiveCanUseMinutes * 60000),
       elapsed,
+      effectiveCanUseMinutes,
+      drawLayerMinutes,
       layerCount,
       topLayer,
       doffingLayer,
@@ -382,6 +423,50 @@ function getCanSections(cans, drawingStart, defectTime, canUseMinutes, blendLag,
   });
 }
 
+function getDoffingLookupWindow(data, elapsed, layerMinutes, drawLayerMinutes, blendLag) {
+  const hasLookupInputs = Boolean(data.drawingStart && data.defectTime && data.drawLayerMinutes && data.layerMinutes);
+  if (!hasLookupInputs) return null;
+
+  const doffTotal = Number(data.doffTimeHeader) || 0;
+  const elapsedMinutes = Math.max(0, elapsed);
+  const rawLayersFromTop = Math.max(1, Math.ceil(elapsedMinutes / drawLayerMinutes));
+  const totalLayers = doffTotal ? Math.max(1, Math.ceil(doffTotal / layerMinutes)) : null;
+  const exceedsOneCan = totalLayers ? rawLayersFromTop > totalLayers : false;
+  const layersFromTop = totalLayers ? Math.min(rawLayersFromTop, totalLayers) : rawLayersFromTop;
+  const drawingLayerStart = (rawLayersFromTop - 1) * drawLayerMinutes;
+  const drawingLayerEnd = rawLayersFromTop * drawLayerMinutes;
+  const doffingLayerFromBottom = totalLayers ? Math.max(1, totalLayers - layersFromTop + 1) : null;
+  const targetMinuteStart = doffingLayerFromBottom ? (doffingLayerFromBottom - 1) * layerMinutes : null;
+  const targetMinuteEnd = doffingLayerFromBottom ? Math.min(doffTotal, doffingLayerFromBottom * layerMinutes) : null;
+  const bufferLayers = blendLag > 0 ? Math.ceil(blendLag / drawLayerMinutes) : 1;
+  const reviewTopStart = Math.max(1, layersFromTop - bufferLayers);
+  const reviewTopEnd = totalLayers ? Math.min(totalLayers, layersFromTop + bufferLayers) : layersFromTop + bufferLayers;
+  const reviewBottomStart = totalLayers ? Math.max(1, totalLayers - reviewTopEnd + 1) : null;
+  const reviewBottomEnd = totalLayers ? Math.min(totalLayers, totalLayers - reviewTopStart + 1) : null;
+  const sheetMinuteStart = reviewBottomStart ? Math.max(0, (reviewBottomStart - 1) * layerMinutes) : null;
+  const sheetMinuteEnd = reviewBottomEnd ? Math.min(doffTotal, reviewBottomEnd * layerMinutes) : null;
+  const minutesFromDoffingEnd = Math.max(layerMinutes, layersFromTop * layerMinutes);
+
+  return {
+    elapsedMinutes,
+    rawLayersFromTop,
+    layersFromTop,
+    totalLayers,
+    exceedsOneCan,
+    drawingLayerStart,
+    drawingLayerEnd,
+    doffingLayerFromBottom,
+    targetMinuteStart,
+    targetMinuteEnd,
+    bufferLayers,
+    reviewTopStart,
+    reviewTopEnd,
+    minutesFromDoffingEnd,
+    sheetMinuteStart,
+    sheetMinuteEnd
+  };
+}
+
 function analyze(data) {
   const fallbackDate = new Date();
   const drawingStart = parseDate(data.drawingStart) || fallbackDate;
@@ -389,9 +474,12 @@ function analyze(data) {
   const canUseMinutes = Math.max(1, Number(data.canUseMinutes) || 1);
   const blendLag = Math.max(0, Number(data.blendLag) || 0);
   const layerMinutes = Math.max(0.1, Number(data.layerMinutes) || 1);
+  const drawLayerMinutes = Math.max(0.1, Number(data.drawLayerMinutes) || canUseMinutes);
   const activeFsRow = getActiveFsRow(data);
   const sourceRows = (data.doffingRows || "").trim() ? data.doffingRows : data.cans;
-  const cans = getCanSections(parseCans(sourceRows || ""), drawingStart, defectTime, canUseMinutes, blendLag, layerMinutes);
+  const parsedCans = parseCans(sourceRows || "");
+  const hasCanRows = parsedCans.length > 0;
+  const cans = getCanSections(parsedCans, drawingStart, defectTime, canUseMinutes, blendLag, layerMinutes, drawLayerMinutes);
   const selectedDefect = activeFsRow && activeFsRow.totalDefects > 0 ? activeFsRow.defect : data.defect;
   const profile = defectProfiles[selectedDefect] || defectProfiles.bundle;
   const elapsed = drawingStart && defectTime ? minutesBetween(drawingStart, defectTime) : 0;
@@ -412,8 +500,37 @@ function analyze(data) {
   const confidence = clamp((primary ? primary.score : 0) + severityAdd, 5, 99);
   const risk = confidence >= 80 ? "ความเสี่ยงสูง" : confidence >= 55 ? "ความเสี่ยงปานกลาง" : "ความเสี่ยงต่ำ";
   const origin = analyzeOrigin(data, traced, profile);
+  const doffingLookup = getDoffingLookupWindow(data, preciseMinutesBetween(drawingStart, defectTime), layerMinutes, drawLayerMinutes, blendLag);
 
-  return { drawingStart, defectTime, elapsed, profile, traced, primary, confidence, risk, activeFsRow, canUseMinutes, layerMinutes, origin };
+  const canDataReady = hasTraceableCanData(primary);
+  const traceStatus = canDataReady
+    ? "ready"
+    : hasCanRows ? "partial" : "missing";
+  const traceMessage = canDataReady
+    ? "ระบุ Can และช่วงเวลา Spinning ได้"
+    : hasCanRows
+      ? "พบข้อมูล Can บางส่วน แต่ยังขาดเวลาเริ่ม/จบ Spinning ที่ใช้ย้อนชั้นในถัง"
+      : "ยังไม่มี Doffing / Can record จึงยังระบุ Can หรือชั้นในถังไม่ได้";
+
+  return {
+    drawingStart,
+    defectTime,
+    elapsed,
+    profile,
+    traced,
+    primary,
+    confidence,
+    risk,
+    activeFsRow,
+    canUseMinutes,
+    layerMinutes,
+    drawLayerMinutes,
+    origin,
+    doffingLookup,
+    canDataReady,
+    traceStatus,
+    traceMessage
+  };
 }
 
 function Field({ id, label, children, help }) {
@@ -426,8 +543,8 @@ function Field({ id, label, children, help }) {
   );
 }
 
-function TextInput({ form, id, onChange, type = "text", min }) {
-  return <input id={id} name={id} type={type} min={min} value={form[id]} onChange={onChange} />;
+function TextInput({ form, id, onChange, type = "text", min, step, placeholder, required = false, list }) {
+  return <input id={id} name={id} type={type} min={min} step={step} placeholder={placeholder} value={form[id]} onChange={onChange} required={required} list={list} />;
 }
 
 function TextArea({ form, id, onChange }) {
@@ -436,9 +553,12 @@ function TextArea({ form, id, onChange }) {
 
 export default function HomePage() {
   const [form, setForm] = useState(defaultForm);
+  const [doffingDraft, setDoffingDraft] = useState(defaultDoffingDraft);
+  const [traceMode, setTraceMode] = useState("quick");
   const [activeView, setActiveView] = useState("home");
   const result = useMemo(() => analyze(form), [form]);
   const primary = result.primary;
+  const canReady = result.canDataReady;
   const confidenceClass = result.confidence >= 80 ? "high" : result.confidence < 55 ? "low" : "";
   const viewTitle = {
     home: ["TRACK FIBER", "เลือกเมนูที่ต้องการใช้งาน"],
@@ -459,10 +579,75 @@ export default function HomePage() {
     : result.origin.likelyOrigin === "Spinning / Can"
       ? "เริ่มตรวจสอบที่ Spinning (Can)"
       : "ตรวจ Drawing และ Can พร้อมกัน";
+  const quickMode = traceMode === "quick";
+  const doffingLookupText = result.doffingLookup
+    ? result.doffingLookup.exceedsOneCan
+      ? `เวลา Drawing ที่กรอกเทียบได้ ${result.doffingLookup.rawLayersFromTop} ชั้น แต่ใบ doffing นี้มีประมาณ ${result.doffingLookup.totalLayers} ชั้น จึงน่าจะเกิน 1 ถัง ให้ตรวจ Can ถัดไปหรือเช็กเวลาเริ่ม Drawing/เวลาที่พบ Defect อีกครั้ง`
+      : result.doffingLookup.sheetMinuteStart !== null
+      ? `เปิดใบ doffing ช่วงนาทีที่ ${formatMinutesValue(result.doffingLookup.sheetMinuteStart)} - ${formatMinutesValue(result.doffingLookup.sheetMinuteEnd)} จากเวลาเริ่ม doffing โดยจุดหลักอยู่ราวนาทีที่ ${formatMinutesValue(result.doffingLookup.targetMinuteStart)} - ${formatMinutesValue(result.doffingLookup.targetMinuteEnd)}`
+      : `เปิดใบ doffing ช่วงท้าย ย้อนจากเวลาจบประมาณ 0 - ${formatMinutesValue(result.doffingLookup.minutesFromDoffingEnd)} นาที`
+    : "กรอกเวลาเริ่ม Drawing, เวลาที่พบ Defect, นาทีต่อชั้นของ Drawing และ Doffing เพื่อคำนวณช่วงใบ doffing";
+  const quickResultTitle = result.doffingLookup
+    ? result.doffingLookup.exceedsOneCan
+      ? "เวลาเกินช่วงของใบนี้"
+      : result.doffingLookup.sheetMinuteStart !== null
+        ? `เปิดใบ doffing นาทีที่ ${formatMinutesValue(result.doffingLookup.sheetMinuteStart)} - ${formatMinutesValue(result.doffingLookup.sheetMinuteEnd)}`
+        : "กรอกเวลา Doffing รวม"
+    : "กรุณากรอกข้อมูลเวลา";
 
-  function updateField(event) {
+function updateField(event) {
     const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
+    setForm((current) => {
+      if (name === "brand") {
+        const preset = findBrandPreset(value);
+        return preset
+          ? { ...current, brand: preset.brand, baleNo: preset.baleNo, drawingLine: preset.drawingLine, spinningLine: preset.spinningLine, testTime: preset.testTime, productionDate: preset.productionDate }
+          : { ...current, brand: value };
+      }
+    if (name === "drawingLine") {
+      return { ...current, drawingLine: value, spinningLine: value ? drawingToSpinningMap[value] || "" : "" };
+      }
+      return { ...current, [name]: value };
+    });
+  }
+
+  function updateDoffingDraft(event) {
+    const { name, value } = event.target;
+    setDoffingDraft((current) => ({ ...current, [name]: value }));
+  }
+
+  function addDoffingRecord() {
+    const doffMinutes = doffingDraft.doffMinutes || form.doffTimeHeader;
+    if (!doffingDraft.day || !doffingDraft.time || !doffMinutes) return;
+
+    const existingLines = form.doffingRows
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+    const rowNo = existingLines.length + 1;
+    const record = [
+      rowNo,
+      doffingDraft.day,
+      doffingDraft.time,
+      form.spinningLine || form.drawingLine || "-",
+      doffingDraft.canNo || `Can ${rowNo}`,
+      doffingDraft.position || "-",
+      form.brand || "-",
+      doffMinutes,
+      "",
+      "",
+      doffingDraft.remark || "ปกติ"
+    ].join(", ");
+
+    setForm((current) => ({
+      ...current,
+      doffingRows: current.doffingRows ? `${current.doffingRows}\n${record}` : record
+    }));
+    setDoffingDraft((current) => ({
+      ...defaultDoffingDraft,
+      day: current.day,
+      doffMinutes
+    }));
   }
 
   function handleSubmit(event) {
@@ -493,22 +678,22 @@ export default function HomePage() {
     ],
     [
       "4",
-      "แปลงช่วงเวลา Drawing เป็นตำแหน่งเส้นใยใน Can",
-      primary
-        ? `ตำแหน่งจากปากถังลงไปประมาณ ${formatPercent(primary.positionFromTopPct)} ตรงกับชั้น Doffing ${primary.doffingLayer}/${primary.layerCount}`
-        : "ยังไม่มีข้อมูลถัง ให้เพิ่ม Doffing record หรือรายการ Can ก่อนวิเคราะห์"
+      "แปลงช่วงเวลา Drawing เป็นช่วงที่ควรเปิดดูในใบ Doffing",
+      canReady
+        ? `Drawing เดินมา ${result.elapsed} นาที เทียบกับ ${result.drawLayerMinutes} นาทีต่อชั้น จึงอยู่ประมาณชั้นที่ ${primary.topLayer} จากด้านบน และตรงกับชั้น Doffing ${primary.doffingLayer}/${primary.layerCount}`
+        : doffingLookupText
     ],
     [
       "5",
-      "ตรวจสอบช่วงเวลา Spinning ของชั้นเส้นใยที่เกี่ยวข้อง",
-      primary
+      "เปิดใบ Doffing แล้วเทียบกับเหตุการณ์ Spinning",
+      canReady
         ? `ตรวจสอบ ${primary.id} ชั้นนี้ช่วง ${formatTime(primary.spinSectionStart)} - ${formatTime(primary.spinSectionEnd)} เทียบกับ Laydown, Tension, Wrapping และหมายเหตุหน้างาน`
-        : `ตรวจ ${form.spinningLine}, can laydown, tension/wrapping และหมายเหตุ operator ในช่วงที่สัมพันธ์กับเวลา Defect`
+        : `ตรวจ ${form.spinningLine || "Spinning machine ที่เกี่ยวข้อง"}, can laydown, tension/wrapping และหมายเหตุ operator ในช่วงที่ระบบคำนวณให้`
     ],
     [
       "6",
       "คัดแยกเส้นใยในช่วงที่มีความเสี่ยง",
-      primary
+      canReady
         ? `คัดแยกเส้นใยเฉพาะบริเวณที่มีความเสี่ยงจากตำแหน่งจากปากถัง ${formatPercent(primary.removeTopStartPct)} - ${formatPercent(primary.removeTopEndPct)} แล้วให้ QC ยืนยันก่อนใช้ส่วนที่เหลือต่อ`
         : "ถ้า Defect ต่อเนื่อง ให้ hold เฉพาะส่วนที่สัมพันธ์กับเวลาและตำแหน่งที่พบ Defect"
     ]
@@ -538,24 +723,20 @@ export default function HomePage() {
           <button className={activeView === "home" ? "active" : ""} type="button" onClick={() => setActiveView("home")}>Home</button>
           <button className={activeView === "input" ? "active" : ""} type="button" onClick={() => setActiveView("input")}>บันทึกข้อมูล</button>
           <button className={activeView === "overview" ? "active" : ""} type="button" onClick={() => setActiveView("overview")}>ผลการวิเคราะห์</button>
-          <button className={activeView === "origin" ? "active" : ""} type="button" onClick={() => setActiveView("origin")}>วิเคราะห์สาเหตุ</button>
           <button className={activeView === "trace" ? "active" : ""} type="button" onClick={() => setActiveView("trace")}>วิเคราะห์ตำแหน่ง</button>
+          <button className={activeView === "origin" ? "active" : ""} type="button" onClick={() => setActiveView("origin")}>วิเคราะห์สาเหตุ</button>
           <button className={activeView === "timeline" ? "active" : ""} type="button" onClick={() => setActiveView("timeline")}>ลำดับการตรวจสอบ</button>
           <button className={activeView === "matrix" ? "active" : ""} type="button" onClick={() => setActiveView("matrix")}>คู่มืออ้างอิง</button>
         </nav>
 
-        <p className="side-note">
-          
-        </p>
-
         <section className="side-metrics">
           <div className="side-metric">
-            <b>{primary ? primary.id : "-"}</b>
-            Can ที่ควรย้อนตรวจอันดับแรก
+            <b>{canReady ? primary.id : "รอข้อมูล Can"}</b>
+            {canReady ? "Can ที่ควรย้อนตรวจอันดับแรก" : "เพิ่ม Doffing record เพื่อระบุ Can"}
           </div>
           <div className="side-metric">
-            <b>{primary ? `${formatPercent(primary.positionFromTopPct)} / ชั้น ${primary.doffingLayer}` : "-"}</b>
-            ตำแหน่งในถังที่ควรคัดแยก
+            <b>{canReady ? `${formatPercent(primary.positionFromTopPct)} / ชั้น ${primary.doffingLayer}` : "-"}</b>
+            {canReady ? "ตำแหน่งในถังที่ควรคัดแยก" : "ยังคำนวณชั้นในถังไม่ได้"}
           </div>
         </section>
       </aside>
@@ -580,7 +761,7 @@ export default function HomePage() {
           <article className="home-hero">
             <span>Fiber Defect Traceability</span>
             <h3>เริ่มต้นการวิเคราะห์</h3>
-            <p>ระบบเชื่อมโยงข้อมูล Flat screen, Drawing และ Spinning เพื่อระบุตำแหน่งของเส้นใยที่พบความผิดปกติ</p>
+            <p>ระบบคำนวณเวลาย้อนกลับจาก Flat screen และ Drawing เพื่อบอกช่วงที่ควรเปิดดูในใบ doffing ได้เร็วขึ้น</p>
             <button className="btn" type="button" onClick={() => setActiveView("input")}>
               เริ่มวิเคราะห์ใหม่
             </button>
@@ -589,25 +770,25 @@ export default function HomePage() {
           <button className="home-card" type="button" onClick={() => setActiveView("input")}>
             <span>Step 1</span>
             <strong>บันทึกข้อมูล Defect</strong>
-            <p>ใส่เวลาเจอ Defect, เวลาเริ่ม Drawing, Doffing record และ Drawing condition</p>
+            <p>ใส่เวลาเจอ Defect, เวลาเริ่ม Drawing และเวลาต่อชั้น เพื่อคำนวณช่วงใบ doffing ที่ควรตรวจ</p>
           </button>
 
           <button className="home-card" type="button" onClick={() => setActiveView("overview")}>
             <span>Step 2</span>
             <strong>ผลการวิเคราะห์เบื้องต้น</strong>
-            <p>ดูคำแนะนำหลักว่าต้องเริ่มตรวจที่ไหนและควรกันเส้นใยช่วงใดไว้ก่อน</p>
+            <p>ดูช่วงเวลาในใบ doffing ที่ควรเปิดตรวจ พร้อมคำแนะนำว่าควรเริ่มจาก Drawing หรือ Spinning</p>
+          </button>
+
+          <button className="home-card" type="button" onClick={() => setActiveView("trace")}>
+            <span>Trace</span>
+            <strong>ตรวจสอบตำแหน่งภายใน Can</strong>
+            <p>ใช้เมื่อมี Doffing record ครบ เพื่อระบุ Can, ชั้น และช่วงเวลาของชั้นนั้นละเอียดขึ้น</p>
           </button>
 
           <button className="home-card" type="button" onClick={() => setActiveView("origin")}>
             <span>Check</span>
             <strong>วิเคราะห์สาเหตุ</strong>
             <p>เปรียบเทียบความเสี่ยงระหว่าง Spinning / Can กับ Drawing</p>
-          </button>
-
-          <button className="home-card" type="button" onClick={() => setActiveView("trace")}>
-            <span>Trace</span>
-            <strong>ตรวจสอบตำแหน่งภายใน Can</strong>
-            <p>ดู Can, ชั้น Doffing, ตำแหน่งจากปากถัง และช่วงเวลาของชั้นนั้น</p>
           </button>
 
           <button className="home-card" type="button" onClick={() => setActiveView("timeline")}>
@@ -618,86 +799,315 @@ export default function HomePage() {
         </section>
 
         <section className={`summary-band ${activeView !== "overview" ? "page-hidden" : ""}`} aria-label="สรุปผลสำคัญ">
-          <article className="summary-card hero">
-            <span>1. เริ่มจากตรงนี้</span>
-            <strong>{firstAction}</strong>
-            <p>{result.origin.firstCheck}</p>
-            <small>{originReason}</small>
-          </article>
-          <article className="summary-card">
-            <span>2. ช่วงการผลิตที่ได้รับผลกระทบ</span>
-            <strong>{primary ? `${formatPercent(primary.removeTopStartPct)} - ${formatPercent(primary.removeTopEndPct)}` : "-"}</strong>
-            <p>{primary ? `จากปากถังของ ${primary.id}` : "ยังไม่มีข้อมูล Can"}</p>
-          </article>
-          <article className="summary-card">
-            <span>3. ชั้นเส้นใยที่ควรตรวจสอบ</span>
-            <strong>{primary ? `ชั้น ${primary.doffingLayer}/${primary.layerCount}` : "-"}</strong>
-            <p>{primary ? `เวลาชั้นนี้ ${formatTime(primary.spinSectionStart)} - ${formatTime(primary.spinSectionEnd)}` : "ยังไม่มีข้อมูลชั้น"}</p>
-          </article>
-          <article className="summary-card">
-            <span>4. ระดับความเชื่อมั่น</span>
-            <strong>{result.confidence}%</strong>
-            <p>{result.risk} | Drawing {result.origin.drawingRisk}% / Can {result.origin.spinningRisk}%</p>
-          </article>
+          {quickMode ? (
+            <>
+              <article className="summary-card hero">
+                <span>1. ฟังก์ชันที่ใช้</span>
+                <strong>คำนวณเวลาเปิดใบ doffing</strong>
+                <p></p>
+                <small>{form.spinningLine ? `เปิดใบของเครื่อง ${form.spinningLine}` : "เลือก Drawing machine เพื่อให้ระบบช่วยเติม Spinning machine"}</small>
+              </article>
+              <article className="summary-card">
+                <span>2. ช่วงนาทีที่ควรเปิดดู</span>
+                <strong>{quickResultTitle}</strong>
+                <p>{doffingLookupText}</p>
+              </article>
+              <article className="summary-card">
+                <span>3. ตำแหน่งจากเวลา Drawing</span>
+                <strong>{result.doffingLookup ? result.doffingLookup.exceedsOneCan ? "เกินช่วงใบนี้" : `ชั้น ${result.doffingLookup.layersFromTop} จากด้านบน` : "รอข้อมูลเวลา"}</strong>
+                <p>{result.doffingLookup ? `หลังเริ่ม Drawing ${formatMinutesValue(result.doffingLookup.elapsedMinutes)} นาที` : "กรอกเวลาเริ่ม Drawing และเวลาที่พบ Defect"}</p>
+              </article>
+              <article className="summary-card">
+                <span>4. ขั้นตอนต่อไป</span>
+                <strong>{result.doffingLookup?.exceedsOneCan ? "ตรวจ Can ถัดไป" : "เปิดใบแล้วเทียบหมายเหตุ"}</strong>
+                <p>{result.doffingLookup?.exceedsOneCan ? "เวลาที่พบ Defect อาจไม่ได้อยู่ในถัง/ใบ doffing ใบแรกที่เลือก" : "ดู remark, fluff, tension, wrapping หรือเหตุการณ์ผิดปกติในช่วงนาทีที่ระบบแนะนำ"}</p>
+              </article>
+            </>
+          ) : (
+            <>
+              <article className="summary-card hero">
+                <span>1. เริ่มจากตรงนี้</span>
+                <strong>{firstAction}</strong>
+                <p>{result.origin.firstCheck}</p>
+                <small>{originReason}</small>
+              </article>
+              <article className="summary-card">
+                <span>2. Can / ชั้นที่เกี่ยวข้อง</span>
+                <strong>{canReady ? `${primary.id} / ชั้น ${primary.doffingLayer}` : "ยังระบุไม่ได้"}</strong>
+                <p>{canReady ? `เวลาชั้นนี้ ${formatTime(primary.spinSectionStart)} - ${formatTime(primary.spinSectionEnd)}` : result.traceMessage}</p>
+              </article>
+              <article className="summary-card">
+                <span>3. ช่วงที่ควรคัดแยก</span>
+                <strong>{canReady ? `${formatPercent(primary.removeTopStartPct)} - ${formatPercent(primary.removeTopEndPct)}` : "รอข้อมูล Can"}</strong>
+                <p>{canReady ? `จากปากถังของ ${primary.id}` : "ต้องเพิ่ม Doffing / Can record ก่อน"}</p>
+              </article>
+              <article className="summary-card">
+                <span>4. ระดับความมั่นใจ</span>
+                <strong>{canReady ? `${result.confidence}%` : "ยังไม่ครบ"}</strong>
+                <p>{canReady ? `${result.risk} | Drawing ${result.origin.drawingRisk}% / Can ${result.origin.spinningRisk}%` : "ตอนนี้ยังวิเคราะห์ละเอียดถึง Can/ชั้นไม่ได้"}</p>
+              </article>
+            </>
+          )}
         </section>
 
         <section className={`layout ${showLayout ? "" : "page-hidden"} ${activeView === "input" ? "single" : "full"}`}>
           <section className={`panel pad ${activeView !== "input" ? "page-hidden" : ""}`} id="input">
-            <h3>ข้อมูลการตรวจพบ Defect</h3>
+            <h3>บันทึกข้อมูลสำหรับวิเคราะห์</h3>
             <form className="form" onSubmit={handleSubmit}>
-              <div className="quick-guide">
-                <strong>กรุณากรอกข้อมูลที่จำเป็นสำหรับการวิเคราะห์</strong>
-                <span>ระบุเวลาเริ่ม Drawing, เวลาเจอ Defect, ประเภท Defect และ Record ที่เกี่ยวข้องเพื่อใช้ในการวิเคราะห์</span>
-              </div>
+              <datalist id="brand-options">
+                {brandExamples.map((brand) => <option key={brand} value={brand} />)}
+              </datalist>
+              <datalist id="drawing-machine-options">
+                {drawingMachineOptions.map((machine) => <option key={machine} value={machine} />)}
+              </datalist>
+              <datalist id="spinning-machine-options">
+                {spinningMachineOptions.map((machine) => <option key={machine} value={machine} />)}
+              </datalist>
 
-              <div className="two">
-                <Field id="brand" label="Brand / Grade">
-                  <TextInput form={form} id="brand" onChange={updateField} />
-                </Field>
-                <Field id="lot" label="Lot / Run No.">
-                  <TextInput form={form} id="lot" onChange={updateField} />
-                </Field>
-              </div>
+              <details className="advanced compact">
+                <summary>ข้อมูลพื้นฐานจากเอกสาร Orientation</summary>
+                <div className="advanced-body machine-guide">
+                  <div>
+                    <strong>Spinning machine</strong>
+                    <p>SM-31, SM-32, SM-4, SM-5, SM-61, SM-62</p>
+                  </div>
+                  <div>
+                    <strong>Drawing machine</strong>
+                    <p>3KS, 4KS, 4KN, 5KS, 5KN, 6KS, 6KN, 7KN</p>
+                  </div>
+                  <div>
+                    <strong>Machine link</strong>
+                    <p>4KN → SM-4, 5KN → SM-5, 6KN → SM-62, 6KS → SM-61, 3KS/7KN → SM-32</p>
+                  </div>
+                </div>
+              </details>
 
-              <div className="two">
-                <Field id="drawingStart" label="เวลาเริ่ม Drawing">
-                  <TextInput form={form} id="drawingStart" type="datetime-local" onChange={updateField} />
-                </Field>
-                <Field id="defectTime" label="เวลาที่ตรวจพบ Defect">
-                  <TextInput form={form} id="defectTime" type="datetime-local" onChange={updateField} />
-                </Field>
-              </div>
+              <section className="mode-switch" aria-label="เลือกฟังก์ชันวิเคราะห์">
+                <button className={quickMode ? "active" : ""} type="button" onClick={() => setTraceMode("quick")}>
+                  <strong>คำนวณเวลาเปิดใบ doffing</strong>
+                  <span>กรอกเฉพาะข้อมูลเวลา ไม่ต้องใส่ Doffing / Spinning record</span>
+                </button>
+                <button className={!quickMode ? "active" : ""} type="button" onClick={() => setTraceMode("detailed")}>
+                  <strong>วิเคราะห์ละเอียดถึง Can / ชั้น</strong>
+                  <span>ใช้เมื่อมีข้อมูล record ราย Can และต้องการ trace ตำแหน่งในถัง</span>
+                </button>
+              </section>
 
-              <div className="two">
-                <Field id="baleNo" label="Bale No. ที่พบ Defect">
-                  <TextInput form={form} id="baleNo" onChange={updateField} />
-                </Field>
-                <Field id="testTime" label="เวลาเก็บตัวอย่าง">
+              <section className={`calc-preview ${canReady ? "ready" : ""}`} aria-label="ผลคำนวณตำแหน่งเบื้องต้น">
+                <div>
+                  <span>{quickMode ? "ผลคำนวณเวลา" : "ผลคำนวณละเอียด"}</span>
+                  <strong>{canReady && !quickMode ? `${primary.id} / ชั้น Doffing ${primary.doffingLayer}` : quickMode ? quickResultTitle : result.doffingLookup ? "ช่วงใบ doffing ที่ควรตรวจ" : "กรุณากรอกข้อมูล"}</strong>
+                  <p>
+                    {canReady && !quickMode
+                      ? `Drawing เดินมา ${result.elapsed} นาที เทียบกับ ${result.drawLayerMinutes} นาทีต่อชั้น จึงใช้เส้นใยถึงชั้นที่ ${primary.topLayer} จากด้านบน`
+                      : doffingLookupText}
+                  </p>
+                </div>
+                {quickMode ? (
+                  <div className="quick-result-grid">
+                    <span>
+                      <b>{result.doffingLookup ? `${formatMinutesValue(result.doffingLookup.elapsedMinutes)} นาที` : "-"}</b>
+                      หลังเริ่ม Drawing
+                    </span>
+                    <span>
+                      <b>{result.doffingLookup ? result.doffingLookup.exceedsOneCan ? "เกินใบนี้" : `ชั้น ${result.doffingLookup.layersFromTop}` : "-"}</b>
+                      จากด้านบนของถัง
+                    </span>
+                    <span>
+                      <b>{result.doffingLookup && !result.doffingLookup.exceedsOneCan && result.doffingLookup.targetMinuteStart !== null ? `${formatMinutesValue(result.doffingLookup.targetMinuteStart)} - ${formatMinutesValue(result.doffingLookup.targetMinuteEnd)}` : "-"}</b>
+                      นาทีเป้าหมายในใบ
+                    </span>
+                    <span>
+                      <b>{result.doffingLookup && !result.doffingLookup.exceedsOneCan && result.doffingLookup.sheetMinuteStart !== null ? `${formatMinutesValue(result.doffingLookup.sheetMinuteStart)} - ${formatMinutesValue(result.doffingLookup.sheetMinuteEnd)}` : result.doffingLookup?.exceedsOneCan ? "เช็ก Can ถัดไป" : "กรอก Doffing รวม"}</b>
+                      ช่วงที่ควรเปิดตรวจ
+                    </span>
+                  </div>
+                ) : (
+                  <div className="calc-preview-metrics">
+                    <span>
+                      <b>{canReady ? `${formatPercent(primary.positionFromTopPct)}` : result.doffingLookup ? result.doffingLookup.exceedsOneCan ? "เกิน 1 ถัง" : `${result.doffingLookup.layersFromTop} ชั้น` : "-"}</b>
+                      ประมาณจากด้านบน
+                    </span>
+                    <span>
+                      <b>{canReady ? `${formatTime(primary.spinSectionStart)} - ${formatTime(primary.spinSectionEnd)}` : result.doffingLookup ? result.doffingLookup.exceedsOneCan ? "ต้องดู Can ถัดไป" : `0 - ${formatMinutesValue(result.doffingLookup.minutesFromDoffingEnd)} นาที` : "-"}</b>
+                      ช่วงท้ายใบ doffing
+                    </span>
+                  </div>
+                )}
+              </section>
+
+              <section className="form-card">
+                <div className="form-card-head">
+                  <span>01</span>
+                  <div>
+                    <strong>เวลาที่ต้องใช้คำนวณ</strong>
+                    <p>ใช้แปลงจากเวลาที่พบ Defect ไปเป็นชั้นของเส้นใยในถัง</p>
+                  </div>
+                </div>
+
+                <div className="two">
+                  <Field id="brand" label="Brand / Product name" help="พิมพ์ได้หลายแบบ เช่น SD 1.1 x 5 NU(E), SD1.1*5NU(E), SD 1.1×5 NU(E) ระบบจะจับคู่ให้เอง">
+                    <TextInput form={form} id="brand" onChange={updateField} required list="brand-options" />
+                  </Field>
+                  <Field id="drawingLine" label="Drawing machine / Line" help="ชื่อเครื่อง Drawing จากเอกสาร เช่น 3KS, 4KN, 5KN, 6KN, 7KN">
+                    <select id="drawingLine" name="drawingLine" value={form.drawingLine} onChange={updateField}>
+                      <option value="">เลือกเครื่อง Drawing</option>
+                      {drawingMachineOptions.map((machine) => (
+                        <option key={machine} value={machine}>{machine}</option>
+                      ))}
+                    </select>
+                  </Field>
+                </div>
+
+                <div className="two">
+                  <Field id="baleNo" label="Bale No.">
+                    <TextInput form={form} id="baleNo" onChange={updateField} />
+                  </Field>
+                  <Field id="productionDate" label="Production date">
+                    <TextInput form={form} id="productionDate" type="date" onChange={updateField} />
+                  </Field>
+                </div>
+
+                <div className="two">
+                  <Field id="drawingStart" label="เวลาเริ่ม Drawing" help="ใช้คำนวณว่าตอนเจอ Defect กำลังใช้เส้นใยตำแหน่งไหนในถัง">
+                    <TextInput form={form} id="drawingStart" type="datetime-local" onChange={updateField} required />
+                  </Field>
+                  <Field id="defectTime" label="เวลาที่เริ่มพบ Defect จาก Flat screen" help="เป็นเวลาหลักสำหรับย้อนกลับไปหา Can, ชั้น และช่วง Spinning">
+                    <TextInput form={form} id="defectTime" type="datetime-local" onChange={updateField} required />
+                  </Field>
+                  <Field id="defect" label="ประเภท Defect ที่พบ">
+                    <select id="defect" name="defect" value={form.defect} onChange={updateField} required>
+                      <option value="bundle">Bundle</option>
+                      <option value="twist">Twist</option>
+                      <option value="tangle">Tangle</option>
+                      <option value="defect">Defect</option>
+                      <option value="long">Long filament</option>
+                    </select>
+                  </Field>
+                </div>
+              </section>
+
+              <section className="form-card">
+                <div className="form-card-head">
+                  <span>02</span>
+                  <div>
+                    <strong>สูตรแปลงเวลาเป็นชั้น</strong>
+                    <p>ตัวอย่าง: Drawing 30 นาที / 10 นาทีต่อชั้น = ใช้ไป 3 ชั้นจากด้านบน</p>
+                  </div>
+                </div>
+
+                <div className="two">
+                  <Field id="drawLayerMinutes" label="Drawing ใช้เวลาดึงออก 1 ชั้น (นาที)" help="กรอกเป็นจำนวนนาที เช่น 10 หมายถึง 1 ชั้นใช้ 10 นาที">
+                    <TextInput form={form} id="drawLayerMinutes" type="number" min="0.1" step="0.1" placeholder="10" onChange={updateField} required />
+                  </Field>
+                  <Field id="layerMinutes" label="Spinning/Doffing เติมลงถัง 1 ชั้น (นาที)" help="กรอกเป็นจำนวนนาที เช่น 1 หมายถึง 1 ชั้นใช้ 1 นาที ไม่ใช่ 10.1">
+                    <TextInput form={form} id="layerMinutes" type="number" min="0.1" step="0.1" placeholder="1" onChange={updateField} required />
+                  </Field>
+                </div>
+
+                <div className="formula-note">
+                  <strong>ตัวอย่างการคำนวณ</strong>
+                  <span>Drawing 30 นาที ÷ 10 นาทีต่อชั้น = ใช้ไป 3 ชั้นจากด้านบน</span>
+                  <span>Doffing 1 นาทีต่อชั้น = ชั้นนั้นย้อนกลับไปหาเวลา Spinning ได้ทีละ 1 นาที</span>
+                  <span>ถ้ากรอก 4.1 ระบบจะอ่านว่า 4.1 นาทีต่อชั้น ไม่ใช่ 4 นาที 1 ชั้น</span>
+                </div>
+
+                {Number(form.layerMinutes) > 3 ? (
+                  <p className="field-warning">
+                    ตรวจสอบค่า Doffing อีกครั้ง: โดยปกติถ้าเติม 1 ชั้นใช้ประมาณ 1 นาที ให้กรอก 1 ไม่ใช่ {form.layerMinutes}
+                  </p>
+                ) : null}
+
+                <Field id="testTime" label="เวลา Test Flat screen">
                   <TextInput form={form} id="testTime" type="time" onChange={updateField} />
                 </Field>
-              </div>
 
-              <div className="two">
-                <Field id="defect" label="ประเภท Defect (Flat screen)">
-                  <select id="defect" name="defect" value={form.defect} onChange={updateField}>
-                    <option value="bundle">Bundle</option>
-                    <option value="twist">Twist</option>
-                    <option value="tangle">Tangle</option>
-                    <option value="defect">Defect</option>
-                    <option value="long">Long filament</option>
-                  </select>
+                <div className="two">
+                  <Field id="blendLag" label="เผื่อช่วงคัดออกก่อน-หลังจุด defect (นาที)">
+                    <TextInput form={form} id="blendLag" type="number" min="0" onChange={updateField} />
+                  </Field>
+                  <Field id="doffTimeHeader" label="เวลา Doffing รวมตามใบ (นาที)" help="เช่นในใบเขียน 30 min DF ให้กรอก 30 เพื่อให้ระบบบอกนาทีในใบ doffing">
+                    <TextInput form={form} id="doffTimeHeader" type="number" min="1" step="0.1" placeholder="30" onChange={updateField} required={quickMode} />
+                  </Field>
+                </div>
+                {!quickMode ? (
+                  <Field id="canUseMinutes" label="เวลา Drawing จนใช้ถังหมด (นาที)" help="กรอกเมื่ออยากวิเคราะห์ทั้งถังหรือระบุ Can แบบละเอียด">
+                    <TextInput form={form} id="canUseMinutes" type="number" min="1" onChange={updateField} />
+                  </Field>
+                ) : null}
+              </section>
+
+              {!quickMode ? (
+              <section className="form-card">
+                <div className="form-card-head">
+                  <span>03</span>
+                  <div>
+                    <strong>ข้อมูล Can / Spinning / Doffing</strong>
+                    <p>ใช้ย้อนตำแหน่งจากเวลาที่พบ defect ไปหา Can, ชั้นในถัง และช่วงเวลา Spinning</p>
+                  </div>
+                </div>
+
+                <Field id="spinningLine" label="Spinning machine / Doffing record" help="ระบบเติมจาก Brand หรือ Drawing machine ให้อัตโนมัติ แต่แก้เองได้ถ้าหน้างานใช้เครื่องอื่น">
+                  <TextInput form={form} id="spinningLine" onChange={updateField} list="spinning-machine-options" />
                 </Field>
-                <Field id="severity" label="ระดับความรุนแรง">
-                  <select id="severity" name="severity" value={form.severity} onChange={updateField}>
-                    <option value="low">พบเล็กน้อย</option>
-                    <option value="medium">พบต่อเนื่อง</option>
-                    <option value="high">พบมาก / ต้อง Hold</option>
-                  </select>
+
+                <div className="record-helper" aria-label="ตัวช่วยเพิ่ม Doffing record">
+                  <div className="record-helper-head">
+                    <strong>ตัวช่วยกรอก Doffing record</strong>
+                    <span>กรอกทีละ Can แล้วกดเพิ่ม ระบบจะแปลงเป็นรูปแบบที่อ่านได้ให้เอง</span>
+                  </div>
+                  <div className="record-grid">
+                    <label>
+                      Can No.
+                      <input name="canNo" value={doffingDraft.canNo} onChange={updateDoffingDraft} placeholder="เช่น 01" />
+                    </label>
+                    <label>
+                      วันที่ Doffing
+                      <input name="day" type="date" value={doffingDraft.day} onChange={updateDoffingDraft} />
+                    </label>
+                    <label>
+                      เวลาเริ่ม
+                      <input name="time" type="time" value={doffingDraft.time} onChange={updateDoffingDraft} />
+                    </label>
+                    <label>
+                      Doffing รวม (นาที)
+                      <input name="doffMinutes" type="number" min="0.1" step="0.1" value={doffingDraft.doffMinutes} onChange={updateDoffingDraft} placeholder={form.doffTimeHeader || "30"} />
+                    </label>
+                    <label>
+                      Position
+                      <input name="position" value={doffingDraft.position} onChange={updateDoffingDraft} placeholder="ถ้ามี" />
+                    </label>
+                    <label>
+                      Remark
+                      <input name="remark" value={doffingDraft.remark} onChange={updateDoffingDraft} placeholder="ปกติ / พบ fluff / tension swing" />
+                    </label>
+                  </div>
+                  <button className="btn secondary" type="button" onClick={addDoffingRecord} disabled={!doffingDraft.day || !doffingDraft.time || !(doffingDraft.doffMinutes || form.doffTimeHeader)}>
+                    เพิ่มเข้า Record
+                  </button>
+                </div>
+
+                <Field id="doffingRows" label="Doffing / Spinning record" help="ระบบสร้างให้จากตัวช่วยด้านบน หรือวางข้อมูลหลายบรรทัดจาก Excel ได้ | Format: No, Day, Time, Can, Can No., Position, Grade, Doff time, Fluff check, Sign, Remark">
+                  <TextArea form={form} id="doffingRows" onChange={updateField} />
                 </Field>
-              </div>
+              </section>
+              ) : (
+                <section className="form-card compact-card">
+                  <div className="form-card-head">
+                    <span>03</span>
+                    <div>
+                      <strong>เครื่องที่ใช้เปิดใบ doffing</strong>
+                      <p>โหมดนี้ไม่ต้องกรอก Doffing / Spinning record ระบบคำนวณช่วงเวลาให้ แล้วผู้ใช้ไปเปิดใบจริงเอง</p>
+                    </div>
+                  </div>
+                  <Field id="spinningLine" label="Spinning machine ที่เกี่ยวข้อง" help="ระบบเติมจาก Drawing machine ให้ ถ้าหน้างานใช้เครื่องอื่นสามารถแก้ได้">
+                    <TextInput form={form} id="spinningLine" onChange={updateField} list="spinning-machine-options" />
+                  </Field>
+                </section>
+              )}
 
               <details className="advanced">
-                <summary>ข้อมูลเพิ่มเติม</summary>
+                <summary>ข้อมูลเสริม ถ้ามี</summary>
                 <div className="advanced-body">
                   <div className="two">
                     <Field id="smNo" label="SM No.">
@@ -710,9 +1120,6 @@ export default function HomePage() {
                   <div className="two">
                     <Field id="dfNo" label="DF No.">
                       <TextInput form={form} id="dfNo" onChange={updateField} />
-                    </Field>
-                    <Field id="doffTimeHeader" label="Doff time จากหัวเอกสาร (นาที)">
-                      <TextInput form={form} id="doffTimeHeader" type="number" onChange={updateField} />
                     </Field>
                   </div>
                   <div className="two">
@@ -739,37 +1146,16 @@ export default function HomePage() {
                       <TextInput form={form} id="actualSpinneret" onChange={updateField} />
                     </Field>
                   </div>
-                  <div className="two">
-                    <Field id="drawingLine" label="Machine / Drawing Line">
-                      <TextInput form={form} id="drawingLine" onChange={updateField} />
-                    </Field>
-                    <Field id="spinningLine" label="Spinning Line / Doffing record">
-                      <TextInput form={form} id="spinningLine" onChange={updateField} />
-                    </Field>
-                  </div>
-                  <div className="two">
-                    <Field id="canUseMinutes" label="เวลาเดิน Drawing จนใช้ถังหมด (นาที)">
-                      <TextInput form={form} id="canUseMinutes" type="number" min="1" onChange={updateField} />
-                    </Field>
-                    <Field id="blendLag" label="เผื่อช่วงคัดออกก่อน-หลังจุด defect (นาที)">
-                      <TextInput form={form} id="blendLag" type="number" min="0" onChange={updateField} />
-                    </Field>
-                  </div>
-                  <Field id="layerMinutes" label="เวลา doffing ต่อ 1 ชั้น (นาที)" help="ใช้ระบุชั้นที่สัมพันธ์กับ defect โดยไม่ต้องแยกทิศการเคลื่อนที่ของถัง">
-                    <TextInput form={form} id="layerMinutes" type="number" min="0.1" onChange={updateField} />
+                  <Field id="cans" label="รายการ Can แบบย่อ ถ้าไม่มี Doffing record" help="รูปแบบต่อบรรทัด: Can No, เวลาเริ่ม Spinning, เวลาจบ Spinning, หมายเหตุ">
+                    <TextArea form={form} id="cans" onChange={updateField} />
                   </Field>
-                  <div className="quick-guide">
-                    <strong>Drawing condition ตอนพบ defect</strong>
-                    <span>ใช้แยกว่า defect น่าจะเกิดระหว่าง Drawing หรือมีต้นทางจาก Can/Spinning</span>
-                  </div>
+                  <Field id="note" label="บันทึกจาก Flat screen / หน้างาน">
+                    <TextArea form={form} id="note" onChange={updateField} />
+                  </Field>
+                  <Field id="fsRows" label="Flat screen rows / Test data">
+                    <TextArea form={form} id="fsRows" onChange={updateField} />
+                  </Field>
                   <div className="two">
-                    <Field id="affectedScope" label="ขอบเขตที่พบ Defect">
-                      <select id="affectedScope" name="affectedScope" value={form.affectedScope} onChange={updateField}>
-                        <option value="single">พบเด่นเฉพาะ Can / ตำแหน่งเดียว</option>
-                        <option value="multiple">พบหลาย Can / หลายตำแหน่งเวลาใกล้กัน</option>
-                        <option value="unknown">ยังไม่แน่ใจ</option>
-                      </select>
-                    </Field>
                     <Field id="drawingStopStart" label="มี Stop/Start หรือเปลี่ยน Setting ก่อนเจอไหม">
                       <select id="drawingStopStart" name="drawingStopStart" value={form.drawingStopStart} onChange={updateField}>
                         <option value="no">ไม่มี</option>
@@ -794,44 +1180,8 @@ export default function HomePage() {
                       </select>
                     </Field>
                   </div>
-                  <div className="two">
-                    <Field id="drawingRoller" label="Roller / Speed ratio">
-                      <select id="drawingRoller" name="drawingRoller" value={form.drawingRoller} onChange={updateField}>
-                        <option value="normal">ปกติ</option>
-                        <option value="abnormal">ผิดปกติ</option>
-                        <option value="unknown">ไม่ทราบ</option>
-                      </select>
-                    </Field>
-                    <Field id="drawingCutter" label="Cutter / Feed ก่อนตัด">
-                      <select id="drawingCutter" name="drawingCutter" value={form.drawingCutter} onChange={updateField}>
-                        <option value="normal">ปกติ</option>
-                        <option value="abnormal">ผิดปกติ</option>
-                        <option value="unknown">ไม่ทราบ</option>
-                      </select>
-                    </Field>
-                  </div>
-                  <Field id="drawingNote" label="Drawing note">
+                  <Field id="drawingNote" label="Drawing note / เหตุการณ์ก่อนพบ Defect">
                     <TextArea form={form} id="drawingNote" onChange={updateField} />
-                  </Field>
-                  <Field id="cans" label="รายการ Can จาก Spinning ตามลำดับที่นำเข้า Drawing" help="รูปแบบต่อบรรทัด: Can No, เวลาเริ่ม Spinning, เวลาจบ Spinning, หมายเหตุ">
-                    <TextArea form={form} id="cans" onChange={updateField} />
-                  </Field>
-                </div>
-              </details>
-
-              <details className="advanced">
-                <summary>Record ที่เกี่ยวข้อง</summary>
-                <div className="advanced-body">
-                  <Field id="doffingRows" label="Doffing Record rows" help="Format: No, Day, Time, Can, Can No., Position, Grade, Doff time, Fluff check, Sign, Remark">
-                    <TextArea form={form} id="doffingRows" onChange={updateField} />
-                  </Field>
-
-                  <Field id="fsRows" label="FS Oil Dispersion / Flat screen rows" help="Format: No, Bale No., Time, Bundle, Twist, Tangle, Defect, Long filament, Remark">
-                    <TextArea form={form} id="fsRows" onChange={updateField} />
-                  </Field>
-
-                  <Field id="note" label="บันทึกจาก Flat screen / หน้างาน">
-                    <TextArea form={form} id="note" onChange={updateField} />
                   </Field>
                 </div>
               </details>
@@ -846,23 +1196,23 @@ export default function HomePage() {
             <section className={`decision-grid ${activeView !== "trace" ? "page-hidden" : ""}`} aria-label="ผลสรุป">
               <div className="decision-card">
                 <span>ระดับความมั่นใจของผลวิเคราะห์</span>
-                <b>{result.confidence}%</b>
-                <small>{result.risk}</small>
+                <b>{canReady ? `${result.confidence}%` : "รอข้อมูล"}</b>
+                <small>{canReady ? result.risk : "ยังไม่มีข้อมูล Can สำหรับ trace"}</small>
               </div>
               <div className="decision-card">
                 <span>Can ที่เกี่ยวข้องหลัก</span>
-                <b>{primary ? primary.id : "-"}</b>
-                <small>{primary ? `คะแนนความเกี่ยวข้อง ${primary.score}%` : "ยังไม่มีข้อมูล"}</small>
+                <b>{canReady ? primary.id : "ยังระบุไม่ได้"}</b>
+                <small>{canReady ? `คะแนนความเกี่ยวข้อง ${primary.score}%` : "เพิ่ม Doffing / Can record ก่อน"}</small>
               </div>
               <div className="decision-card">
                 <span>ตำแหน่งของเส้นใยใน Can</span>
-                <b>{primary ? formatPercent(primary.positionFromTopPct) : "-"}</b>
-                <small>จากปากถังลงไป</small>
+                <b>{canReady ? formatPercent(primary.positionFromTopPct) : "-"}</b>
+                <small>{canReady ? "จากปากถังลงไป" : "ยังคำนวณไม่ได้"}</small>
               </div>
               <div className="decision-card">
                 <span>ชั้นของเส้นใย</span>
-                <b>{primary ? `${primary.doffingLayer}/${primary.layerCount}` : "-"}</b>
-                <small>Doffing จากล่างขึ้นบน</small>
+                <b>{canReady ? `${primary.doffingLayer}/${primary.layerCount}` : "-"}</b>
+                <small>{canReady ? "Doffing จากล่างขึ้นบน" : "ต้องมีเวลา Doffing"}</small>
               </div>
             </section>
 
@@ -906,7 +1256,7 @@ export default function HomePage() {
                 <span className={`badge ${confidenceClass}`}>{result.risk}</span>
               </div>
               <div className="trace-list">
-                {result.traced.length ? (
+                {canReady && result.traced.length ? (
                   result.traced.slice(0, 4).map((can) => (
                     <article className="trace-card" key={`${can.id}-${can.index}`}>
                       <div className="trace-top">
@@ -919,8 +1269,8 @@ export default function HomePage() {
                         <span>ช่วงเวลา Drawing: {formatTime(can.useStart)} - {formatTime(can.useEnd)}</span>
                         <span>ช่วงเวลา Spinning: {formatTime(can.spinStart)} - {formatTime(can.spinEnd)}</span>
                         <span>ตำแหน่งของเส้นใยใน Can: {formatPercent(can.positionFromTopPct)}</span>
-                        <span>ชั้นจากด้านบน: {can.topLayer}/{can.layerCount}</span>
-                        <span>ชั้นจากด้านล่าง: {can.doffingLayer}/{can.layerCount}</span>
+                        <span>ชั้นที่ Drawing ดึงถึงจากด้านบน: {can.topLayer}/{can.layerCount}</span>
+                        <span>ชั้น Doffing จากด้านล่าง: {can.doffingLayer}/{can.layerCount}</span>
                         <span>เวลาของชั้น: {formatTime(can.spinSectionStart)} - {formatTime(can.spinSectionEnd)}</span>
                         <span>Position: {can.position || "-"}</span>
                         <span>Grade: {can.grade || "-"}</span>
@@ -934,7 +1284,14 @@ export default function HomePage() {
                     </article>
                   ))
                 ) : (
-                  <p className="help">ยังไม่มีข้อมูล Can</p>
+                  <article className="trace-card empty-state">
+                    <div className="trace-top">
+                      <h4>ยังระบุ Can ไม่ได้</h4>
+                      <span className="tag warn">Need Doffing data</span>
+                    </div>
+                    <p>{result.traceMessage}</p>
+                    <p>ให้วางข้อมูลในช่อง <b>Doffing / Spinning record</b> เช่น No, วันที่, เวลา, Can No., Position, Grade, Doff time, Fluff check, ผู้บันทึก, Remark แล้วกดวิเคราะห์อีกครั้ง</p>
+                  </article>
                 )}
               </div>
             </section>
@@ -959,7 +1316,7 @@ export default function HomePage() {
                     </div>
                     <p>
                       {cause[1]}
-                      {primary ? ` | เริ่มจาก ${primary.id}` : ""}
+                      {canReady ? ` | เริ่มจาก ${primary.id}` : " | ต้องเพิ่ม Doffing/Can record เพื่อระบุ Can"}
                     </p>
                   </article>
                 ))}
@@ -971,7 +1328,7 @@ export default function HomePage() {
         <section className={`panel ${activeView !== "timeline" ? "page-hidden" : ""}`} id="timeline">
           <div className="head">
             <h3>ลำดับการตรวจสอบหลังพบความผิดปกติ</h3>
-            <span className="tag warn">{form.brand} / {form.lot}</span>
+            <span className="tag warn">{form.brand}</span>
           </div>
           <div className="timeline">
             {timeline.map((step) => (
