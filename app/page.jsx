@@ -1013,7 +1013,7 @@ export default function HomePage() {
       <main className="main">
         {activeView !== "home" ? (
           <header className="page-heading">
-            <span>{activeView === "input" ? (quickMode ? "โหมดคำนวณเวลา" : "โหมด Trace Can / ชั้น") : "TRACE FIBER"}</span>
+            <span>{activeView === "input" ? (quickMode ? "โหมดคำนวณเวลา" : "โหมดตรวจสอบละเอียด") : "TRACE FIBER"}</span>
             <h2>{pageHeading[activeView]?.[0] || "TRACE FIBER"}</h2>
             <p>{pageHeading[activeView]?.[1] || ""}</p>
           </header>

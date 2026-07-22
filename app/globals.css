@@ -1981,6 +1981,45 @@ tbody tr:hover {
   }
 }
 
+@media (max-width: 820px) {
+  .record-helper {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .record-helper-head {
+    display: grid;
+    gap: 6px;
+    padding-bottom: 12px;
+  }
+
+  .record-helper-head strong {
+    font-size: 1rem;
+  }
+
+  .record-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .record-grid label,
+  .record-grid label:nth-child(4),
+  .record-note-field {
+    grid-column: 1 / -1;
+    gap: 7px;
+  }
+
+  .record-grid input {
+    min-height: 46px;
+    padding-inline: 12px;
+    font-size: 0.95rem;
+  }
+
+  .record-add-button {
+    min-height: 46px;
+  }
+}
+
 @media (max-width: 640px) {
   .main {
     padding: 18px;
