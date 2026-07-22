@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "AquaTrace Fiber Intelligence",
+  title: "Trace Fiber",
   description: "Trace Flat screen defects back to related tow cans and spinning windows."
 };
 
