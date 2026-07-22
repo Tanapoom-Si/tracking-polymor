@@ -697,6 +697,7 @@ export default function HomePage() {
   const [traceMode, setTraceMode] = useState("quick");
   const [activeView, setActiveView] = useState("home");
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [customBrandSnapshot, setCustomBrandSnapshot] = useState("[]");
   const quickMode = traceMode === "quick";
   const analysisForm = useMemo(() => ({
@@ -916,6 +917,11 @@ export default function HomePage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function goToView(view) {
+    setActiveView(view);
+    setMobileNavOpen(false);
+  }
+
 
   const timeline = quickMode ? [
     [
@@ -979,7 +985,19 @@ export default function HomePage() {
 
   return (
     <div className="shell">
-      <aside className="sidebar">
+      {!mobileNavOpen ? (
+        <button
+          className="mobile-nav-toggle"
+          type="button"
+          aria-expanded={mobileNavOpen}
+          aria-controls="primary-navigation"
+          onClick={() => setMobileNavOpen(true)}
+        >
+          เมนู
+        </button>
+      ) : null}
+      {mobileNavOpen ? <button className="mobile-nav-backdrop" type="button" aria-label="ปิดเมนู" onClick={() => setMobileNavOpen(false)} /> : null}
+      <aside className={`sidebar ${mobileNavOpen ? "open" : ""}`}>
         <section className="brand">
           <div className="mark" aria-hidden="true">
             <svg viewBox="0 0 64 64" role="img" focusable="false">
@@ -995,17 +1013,26 @@ export default function HomePage() {
             <h1>TRACE FIBER</h1>
             <p>ระบบวิเคราะห์ข้อมูลย้อนกลับเพื่อระบุตำแหน่งที่เส้นใยเกิดความผิดปกติ</p>
           </div>
+          <button
+            className="mobile-menu-button"
+            type="button"
+            aria-expanded={mobileNavOpen}
+            aria-controls="primary-navigation"
+            onClick={() => setMobileNavOpen((open) => !open)}
+          >
+            ปิด
+          </button>
         </section>
 
-        <nav className="nav" aria-label="เมนูหลัก">
-          <button className={activeView === "home" ? "active" : ""} type="button" onClick={() => setActiveView("home")}>หน้าหลัก</button>
-          <button className={activeView === "input" ? "active" : ""} type="button" onClick={() => setActiveView("input")}>บันทึกข้อมูล</button>
-          <button className={activeView === "overview" ? "active" : ""} type="button" onClick={() => setActiveView("overview")}>วิเคราะห์ข้อมูล</button>
+        <nav id="primary-navigation" className={`nav ${mobileNavOpen ? "open" : ""}`} aria-label="เมนูหลัก">
+          <button className={activeView === "home" ? "active" : ""} type="button" onClick={() => goToView("home")}>หน้าหลัก</button>
+          <button className={activeView === "input" ? "active" : ""} type="button" onClick={() => goToView("input")}>บันทึกข้อมูล</button>
+          <button className={activeView === "overview" ? "active" : ""} type="button" onClick={() => goToView("overview")}>วิเคราะห์ข้อมูล</button>
           {!quickMode && hasAnalyzed ? (
-            <button className={activeView === "origin" ? "active" : ""} type="button" onClick={() => setActiveView("origin")}>วิเคราะห์สาเหตุ</button>
+            <button className={activeView === "origin" ? "active" : ""} type="button" onClick={() => goToView("origin")}>วิเคราะห์สาเหตุ</button>
           ) : null}
-          <button className={activeView === "timeline" ? "active" : ""} type="button" onClick={() => setActiveView("timeline")}>รายการตรวจสอบ</button>
-          <button className={activeView === "matrix" ? "active" : ""} type="button" onClick={() => setActiveView("matrix")}>คู่มืออ้างอิง</button>
+          <button className={activeView === "timeline" ? "active" : ""} type="button" onClick={() => goToView("timeline")}>รายการตรวจสอบ</button>
+          <button className={activeView === "matrix" ? "active" : ""} type="button" onClick={() => goToView("matrix")}>คู่มืออ้างอิง</button>
         </nav>
 
       </aside>
