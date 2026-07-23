@@ -34,9 +34,13 @@ const defaultForm = {
   canUseMinutes: "",
   blendLag: "",
   layerMinutes: "",
+  spinningSpeed: "",
+  dfSpeed: "",
+  tdr: "",
   drawLayerMinutes: "",
   affectedScope: "single",
   drawingStopStart: "no",
+  drawingStopMinutes: "",
   drawingTension: "normal",
   drawingGuide: "normal",
   drawingRoller: "normal",
@@ -229,6 +233,20 @@ function formatMinutesValue(value) {
   const numberValue = Number(value);
   if (!Number.isFinite(numberValue)) return "-";
   return Number.isInteger(numberValue) ? `${numberValue}` : `${numberValue.toFixed(1)}`;
+}
+
+function calculateDrawLayerMinutesValue(data) {
+  const spinningSpeed = Number(data.spinningSpeed);
+  const dfSpeed = Number(data.dfSpeed);
+  const tdr = Number(data.tdr);
+  if (!Number.isFinite(spinningSpeed) || !Number.isFinite(dfSpeed) || !Number.isFinite(tdr)) return null;
+  if (spinningSpeed <= 0 || dfSpeed <= 0 || tdr <= 0) return null;
+  return (spinningSpeed * tdr) / dfSpeed;
+}
+
+function formatCalculatedMinutes(value) {
+  if (!Number.isFinite(value)) return "";
+  return Number.isInteger(value) ? `${value}` : value.toFixed(2).replace(/\.?0+$/, "");
 }
 
 function hasTraceableCanData(can) {
@@ -443,7 +461,7 @@ function getCanSections(cans, drawingStart, defectTime, canUseMinutes, blendLag,
 }
 
 function getDoffingLookupWindow(data, elapsed, layerMinutes, drawLayerMinutes, blendLag, elapsedEnd = elapsed) {
-  const hasLookupInputs = Boolean((data.canStart || data.drawingStart) && data.defectTime && data.drawLayerMinutes && data.layerMinutes);
+  const hasLookupInputs = Boolean((data.canStart || data.drawingStart) && data.defectTime && drawLayerMinutes && layerMinutes);
   if (!hasLookupInputs) return null;
 
   const doffTotal = Number(data.doffTimeHeader) || 0;
@@ -519,23 +537,27 @@ function analyze(data) {
   const canStart = parseDate(data.canStart) || drawingStart;
   const defectTime = parseDate(data.defectTime) || drawingStart;
   const defectEndTime = parseDate(data.defectEndTime) || defectTime;
+  const drawingStopMinutes = data.drawingStopStart === "yes" ? Math.max(0, Number(data.drawingStopMinutes) || 0) : 0;
+  const effectiveDefectTime = new Date(defectTime.getTime() - drawingStopMinutes * 60000);
+  const effectiveDefectEndTime = new Date(defectEndTime.getTime() - drawingStopMinutes * 60000);
   const canUseMinutes = Math.max(1, Number(data.canUseMinutes) || 1);
   const blendLag = Math.max(0, Number(data.blendLag) || 0);
   const layerMinutes = Math.max(0.1, Number(data.layerMinutes) || 1);
-  const drawLayerMinutes = Math.max(0.1, Number(data.drawLayerMinutes) || canUseMinutes);
+  const calculatedDrawLayerMinutes = calculateDrawLayerMinutesValue(data);
+  const drawLayerMinutes = Math.max(0.1, Number(data.drawLayerMinutes) || calculatedDrawLayerMinutes || canUseMinutes);
   const activeFsRow = getActiveFsRow(data);
   const sourceRows = (data.doffingRows || "").trim() ? data.doffingRows : data.cans;
   const parsedCans = parseCans(sourceRows || "");
   const hasCanRows = parsedCans.length > 0;
-  const cans = getCanSections(parsedCans, drawingStart, defectTime, canUseMinutes, blendLag, layerMinutes, drawLayerMinutes);
+  const cans = getCanSections(parsedCans, drawingStart, effectiveDefectTime, canUseMinutes, blendLag, layerMinutes, drawLayerMinutes);
   const selectedDefect = activeFsRow && activeFsRow.totalDefects > 0 ? activeFsRow.defect : data.defect;
   const profile = defectProfiles[selectedDefect] || defectProfiles.bundle;
-  const elapsed = drawingStart && defectTime ? minutesBetween(drawingStart, defectTime) : 0;
+  const elapsed = drawingStart && effectiveDefectTime ? minutesBetween(drawingStart, effectiveDefectTime) : 0;
 
   const traced = cans
     .map((can) => {
       let score = 25;
-      if (defectTime >= can.useStart && defectTime <= can.useEnd) score += 55;
+      if (effectiveDefectTime >= can.useStart && effectiveDefectTime <= can.useEnd) score += 55;
       if (can.elapsed >= 0 && can.elapsed <= canUseMinutes + blendLag) score += 15;
       if (/unstable|remark|change|BCP|fluff|NG|not ok/i.test(can.note)) score += 10;
       if (/swing|wrapping|guide|ผิด|tension|ปัญหา|คราบ|พัน/i.test(can.note)) score += 12;
@@ -550,11 +572,11 @@ function analyze(data) {
   const origin = analyzeOrigin(data, traced, profile);
   const doffingLookup = getDoffingLookupWindow(
     data,
-    preciseMinutesBetween(canStart, defectTime),
+    preciseMinutesBetween(canStart, effectiveDefectTime),
     layerMinutes,
     drawLayerMinutes,
     blendLag,
-    preciseMinutesBetween(canStart, defectEndTime)
+    preciseMinutesBetween(canStart, effectiveDefectEndTime)
   );
 
   const canDataReady = hasTraceableCanData(primary);
@@ -573,6 +595,7 @@ function analyze(data) {
     defectTime,
     defectEndTime,
     elapsed,
+    drawingStopMinutes,
     profile,
     traced,
     primary,
@@ -594,7 +617,7 @@ function fieldIconType(id) {
   if (["brand", "baleNo", "productionDate", "testTime"].includes(id)) return "tag";
   if (["drawingLine", "spinningLine", "smNo", "creelNo", "dfNo"].includes(id)) return "machine";
   if (["drawingStart", "canStart", "doffingStart", "defectTime", "defectEndTime"].includes(id)) return "clock";
-  if (["defectOffsetMinutes", "defectDurationMinutes", "drawLayerMinutes", "layerMinutes", "doffTimeHeader", "canUseMinutes", "blendLag"].includes(id)) return "timer";
+  if (["defectOffsetMinutes", "defectDurationMinutes", "drawLayerMinutes", "layerMinutes", "doffTimeHeader", "canUseMinutes", "blendLag", "drawingStopMinutes", "spinningSpeed", "dfSpeed", "tdr"].includes(id)) return "timer";
   if (["currentCanNo", "canSequence", "totalTowCan", "cans", "doffingRows"].includes(id)) return "can";
   if (["defect", "note", "fsRows", "drawingNote"].includes(id)) return "inspect";
   if (["drawingStopStart", "drawingTension", "drawingGuide", "drawingRoller", "drawingCutter"].includes(id)) return "condition";
@@ -850,6 +873,12 @@ export default function HomePage() {
         return syncTimeFields(next, name);
       }
       next = { ...current, [name]: value };
+      if (["spinningSpeed", "dfSpeed", "tdr"].includes(name)) {
+        const calculatedDrawLayerMinutes = calculateDrawLayerMinutesValue(next);
+        if (calculatedDrawLayerMinutes) {
+          next.drawLayerMinutes = formatCalculatedMinutes(calculatedDrawLayerMinutes);
+        }
+      }
       return syncTimeFields(next, name);
     });
   }
@@ -931,16 +960,13 @@ export default function HomePage() {
     ],
     [
       "2",
-      "ตรวจสอบช่วงเวลาที่เกี่ยวข้องในใบ Doffing",
-      doffingLookupText
+      "ตรวจสอบช่วงเวลาที่เกี่ยวข้องในใบ Doffing และเทียบกับเวลาจริงหรือภาพจาก CCTV",
+      result.doffingLookup?.cctvStart
+        ? `${doffingLookupText} และเทียบกับเวลาจริงหรือ CCTV ช่วง ${quickCctvWindowText}`
+        : `${doffingLookupText} หากต้องการเทียบกับ CCTV ให้ใช้เวลาเริ่ม Doffing / Spinning ของ Can เป็นเวลาอ้างอิง`
     ],
     [
       "3",
-      "เทียบกับเวลาจริงหรือภาพจาก CCTV",
-      result.doffingLookup?.cctvStart ? `ตรวจช่วงเวลา ${quickCctvWindowText}` : "หากต้องการตรวจสอบจาก CCTV ให้ใช้เวลาเริ่ม Doffing / Spinning ของ Can เป็นเวลาอ้างอิง"
-    ],
-    [
-      "4",
       "ตรวจสอบ Remark และเหตุการณ์หน้างาน",
       "ตรวจสอบ Record, Remark จากผู้ปฏิบัติงาน, ภาพจากหน้างาน และเหตุการณ์ผิดปกติของเครื่องในช่วงเวลาที่เกี่ยวข้อง"
     ]
@@ -1324,7 +1350,16 @@ export default function HomePage() {
                       <Field id="layerMinutes" label="ระยะเวลา Doffing ต่อชั้น (นาที)" help="ตัวอย่าง หากใช้เวลา 1 นาทีต่อชั้น ให้กรอก 1">
                         <TextInput form={form} id="layerMinutes" type="number" min="0.1" step="0.1" onChange={updateField} required />
                       </Field>
-                      <Field id="drawLayerMinutes" label="ระยะเวลา Drawing ต่อชั้น (นาที)" help="ตัวอย่าง หากใช้เวลา 10 นาทีต่อชั้น ให้กรอก 10">
+                      <Field id="spinningSpeed" label="Spinning Speed" help="">
+                        <TextInput form={form} id="spinningSpeed" type="number" min="0.1" step="0.01" onChange={updateField} />
+                      </Field>
+                      <Field id="dfSpeed" label="DF Speed" help="">
+                        <TextInput form={form} id="dfSpeed" type="number" min="0.1" step="0.01" onChange={updateField} />
+                      </Field>
+                      <Field id="tdr" label="TDR / Total Draw Roller" help="">
+                        <TextInput form={form} id="tdr" type="number" min="0.1" step="0.01" onChange={updateField} />
+                      </Field>
+                      <Field id="drawLayerMinutes" label="ระยะเวลา Drawing ต่อชั้น (นาที)" help="">
                         <TextInput form={form} id="drawLayerMinutes" type="number" min="0.1" step="0.1" onChange={updateField} required />
                       </Field>
                     </div>
@@ -1415,7 +1450,16 @@ export default function HomePage() {
                   <Field id="layerMinutes" label="ระยะเวลา Doffing ต่อชั้น (นาที)" help="ตัวอย่าง หากใช้เวลา 1 นาทีต่อชั้น ให้กรอก 1">
                     <TextInput form={form} id="layerMinutes" type="number" min="0.1" step="0.1" onChange={updateField} required />
                   </Field>
-                  <Field id="drawLayerMinutes" label="ระยะเวลา Drawing ต่อชั้น (นาที)" help="ตัวอย่าง หากใช้เวลา 1 นาทีต่อชั้น ให้กรอก 1">
+                  <Field id="spinningSpeed" label="Spinning Speed" help="">
+                    <TextInput form={form} id="spinningSpeed" type="number" min="0.1" step="0.01" onChange={updateField} />
+                  </Field>
+                  <Field id="dfSpeed" label="DF Speed" help="">
+                    <TextInput form={form} id="dfSpeed" type="number" min="0.1" step="0.01" onChange={updateField} />
+                  </Field>
+                  <Field id="tdr" label="TDR / Total Draw Roller" help="">
+                    <TextInput form={form} id="tdr" type="number" min="0.1" step="0.01" onChange={updateField} />
+                  </Field>
+                  <Field id="drawLayerMinutes" label="ระยะเวลา Drawing ต่อชั้น (นาที)" help="">
                     <TextInput form={form} id="drawLayerMinutes" type="number" min="0.1" step="0.1" onChange={updateField} required />
                   </Field>
                 </div>
@@ -1478,10 +1522,9 @@ export default function HomePage() {
               </section>
               ) : null}
 
-              {!quickMode ? (
               <section className="form-card">
                 <div className="form-card-head">
-                  <span>05</span>
+                  <span>{quickMode ? "04" : "05"}</span>
                   <div>
                     <strong>บันทึกข้อมูลการทำงานของ Drawing</strong>
                     <p></p>
@@ -1495,6 +1538,9 @@ export default function HomePage() {
                       <option value="yes">มี</option>
                       <option value="unknown">ไม่ทราบ</option>
                     </select>
+                  </Field>
+                  <Field id="drawingStopMinutes" label="เวลาหยุดรวมของ Drawing (นาที)" help="">
+                    <TextInput form={form} id="drawingStopMinutes" type="number" min="0" step="0.1" onChange={updateField} />
                   </Field>
                   <Field id="drawingTension" label="ค่า Tension ในกระบวนการ Drawing">
                     <select id="drawingTension" name="drawingTension" value={form.drawingTension} onChange={updateField}>
@@ -1529,7 +1575,6 @@ export default function HomePage() {
                   <TextArea form={form} id="drawingNote" onChange={updateField} />
                 </Field>
               </section>
-              ) : null}
 
               <button className="btn" type="submit">
                 วิเคราะห์ย้อนกลับ
