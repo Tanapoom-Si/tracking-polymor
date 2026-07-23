@@ -1366,10 +1366,23 @@ input[type="number"] {
 input[type="date"],
 input[type="time"],
 input[type="datetime-local"] {
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
   color-scheme: light;
   padding-right: 44px;
   color: #173047;
   letter-spacing: 0;
+}
+
+input[type="date"]::-webkit-date-and-time-value,
+input[type="time"]::-webkit-date-and-time-value,
+input[type="datetime-local"]::-webkit-date-and-time-value {
+  min-width: 0;
+  text-align: left;
 }
 
 input[type="datetime-local"]:not(:focus):invalid {
@@ -2147,6 +2160,24 @@ tbody tr:hover {
     min-height: 46px;
     padding-inline: 12px;
     font-size: 0.95rem;
+  }
+
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    min-height: 46px;
+    padding: 10px 12px;
+    font-size: 16px;
+    line-height: 1.35;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    width: 20px;
+    height: 20px;
+    margin-right: 0;
+    padding: 5px;
   }
 
   .record-add-button {
