@@ -63,13 +63,13 @@ const defaultDoffingDraft = {
 };
 
 const brandPresets = [
-  { brand: "SD 3.0 x 5 N(C)", baleNo: "1", drawingLine: "1KN", spinningLine: "SM-62", testTime: "08:10", productionDate: "2026-06-25" },
+  { brand: "SD 3.0 x 5 N(C)", baleNo: "1", drawingLine: "1KN", spinningLine: "SM-1", testTime: "08:10", productionDate: "2026-06-25" },
   { brand: "SD 0.5 x 5 N(E)", baleNo: "106", drawingLine: "4KN", spinningLine: "SM-4", testTime: "09:48", productionDate: "2026-06-22" },
   { brand: "SD 1.1 x 5 NU(E)", baleNo: "73", drawingLine: "5KN", spinningLine: "SM-5", testTime: "08:49", productionDate: "2026-06-22" },
   { brand: "SD 1.1 x 5 NU(E)T", baleNo: "81", drawingLine: "5KN", spinningLine: "SM-5", testTime: "10:08", productionDate: "2026-06-25" },
   { brand: "SDJC 1.5 x 5 N(E)", baleNo: "105", drawingLine: "6KN", spinningLine: "SM-62", testTime: "10:07", productionDate: "2026-06-22" },
   { brand: "SDJC 2.0 x 5 N(E)", baleNo: "213", drawingLine: "6KN", spinningLine: "SM-62", testTime: "15:44", productionDate: "2026-06-28" },
-  { brand: "SD 1.1 x 5 NUK(C)", baleNo: "1", drawingLine: "7KN", spinningLine: "SM-5", testTime: "15:08", productionDate: "2026-06-23" }
+  { brand: "SD 1.1 x 5 NUK(C)", baleNo: "1", drawingLine: "7KN", spinningLine: "SM-31", testTime: "15:08", productionDate: "2026-06-23" }
 ];
 const brandExamples = brandPresets.map((preset) => preset.brand);
 const customBrandStorageKey = "trace-fiber-custom-brands";
@@ -108,10 +108,10 @@ function findBrandPreset(value) {
   return brandPresets.find((item) => normalizeBrandName(item.brand) === normalized);
 }
 
-const spinningMachineOptions = ["SM-31", "SM-32", "SM-4", "SM-5", "SM-61", "SM-62"];
+const spinningMachineOptions = ["SM-1", "SM-31", "SM-32", "SM-4", "SM-5", "SM-61", "SM-62"];
 const drawingMachineOptions = ["1KN", "3KS", "4KS", "4KN", "5KS", "5KN", "6KS", "6KN", "7KN"];
 const drawingToSpinningMap = {
-  "1KN": "SM-62",
+  "1KN": "SM-1",
   "3KS": "SM-32",
   "4KS": "SM-4",
   "4KN": "SM-4",
@@ -119,7 +119,7 @@ const drawingToSpinningMap = {
   "5KN": "SM-5",
   "6KS": "SM-61",
   "6KN": "SM-62",
-  "7KN": "SM-32"
+  "7KN": "SM-31"
 };
 
 const defectProfiles = {
@@ -1209,11 +1209,11 @@ export default function HomePage() {
                   </div>
                   <div>
                     <strong>Drawing machine</strong>
-                    <p>3KS, 4KS, 4KN, 5KS, 5KN, 6KS, 6KN, 7KN</p>
+                    <p>1KN, 3KS, 4KS, 4KN, 5KS, 5KN, 6KS, 6KN, 7KN</p>
                   </div>
                   <div>
                     <strong>Machine link</strong>
-                    <p>4KN → SM-4, 5KN → SM-5, 6KN → SM-62, 6KS → SM-61, 3KS/7KN → SM-32</p>
+                    <p>1KN → SM-1, 4KN → SM-4, 5KN → SM-5, 6KN → SM-62, 6KS → SM-61, 3KS → SM-32, 7KN → SM-31</p>
                   </div>
                 </div>
               </details>
