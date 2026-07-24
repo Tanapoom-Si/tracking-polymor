@@ -1102,10 +1102,10 @@ export default function HomePage() {
                 <b>ใช้งานเร็ว</b>
               </span>
               <span className="home-card-body">
-                <strong>คำนวณเวลาเพื่อตรวจสอบเบื้องต้น</strong>
-                <p>ระบุเวลาเริ่ม Drawing เวลาเก็บตัวอย่าง และเวลาต่อชั้น เพื่อคำนวณใบ Doffing ที่เกี่ยวข้อง</p>
+                <strong>คำนวณช่วงเวลาที่ต้องตรวจสอบ</strong>
+                <p>ระบุเวลาเริ่ม Drawing และเวลาเก็บตัวอย่าง เพื่อคำนวณช่วงเวลาที่ต้องตรวจสอบ</p>
               </span>
-              <small><span>เริ่มคำนวณเวลา</span><em aria-hidden="true">→</em></small>
+              <small><span>เริ่มคำนวณ</span><em aria-hidden="true">→</em></small>
             </button>
 
             <button
@@ -1128,10 +1128,10 @@ export default function HomePage() {
                 <b>ตรวจละเอียด</b>
               </span>
               <span className="home-card-body">
-                <strong>วิเคราะห์ Can / ชั้นในถัง</strong>
-                <p>ใช้ข้อมูล Doffing เพื่อระบุ Can ชั้นในถัง และช่วงเวลา Spinning ที่เกี่ยวข้อง</p>
+                <strong>วิเคราะห์ข้อมูล Can</strong>
+                <p>วิเคราะห์ตำแหน่งชั้นของเส้นใยและช่วงเวลา Spinning ที่เกี่ยวข้อง</p>
               </span>
-              <small><span>เริ่มวิเคราะห์ละเอียด</span><em aria-hidden="true">→</em></small>
+              <small><span>เริ่มการวิเคราะห์</span><em aria-hidden="true">→</em></small>
             </button>
           </div>
         </section>
@@ -1224,7 +1224,7 @@ export default function HomePage() {
                   <span>วิเคราะห์ช่วงเวลาที่ควรตรวจสอบ ในกรณีที่ไม่มีข้อมูล Record และ Can no.</span>
                 </button>
                 <button className={!quickMode ? "active" : ""} type="button" onClick={() => setTraceMode("detailed")}>
-                  <strong>2. วิเคราะห์ข้อมูล Can</strong>
+                  <strong>2. วิเคราะห์ข้อมูล</strong>
                   <span>วิเคราะห์ช่วงเวลาที่ควรตรวจสอบ ในกรณีที่มีข้อมูล Spinning และ Drawing Record</span>
                 </button>
               </section>
