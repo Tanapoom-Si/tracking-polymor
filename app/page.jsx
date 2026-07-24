@@ -1037,7 +1037,7 @@ export default function HomePage() {
           </div>
           <div>
             <h1>TRACE FIBER</h1>
-            <p>ระบบวิเคราะห์ข้อมูลย้อนกลับเพื่อระบุตำแหน่งที่เส้นใยเกิดความผิดปกติ</p>
+            <p>ระบบวิเคราะห์ย้อนกลับตำแหน่งการเกิดความผิดปกติของเส้นใย</p>
           </div>
           <button
             className="mobile-menu-button"
