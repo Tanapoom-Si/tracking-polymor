@@ -361,7 +361,7 @@ p {
   color: #ffffff;
   background:
     linear-gradient(90deg, rgba(13, 36, 56, 0.72), rgba(13, 36, 56, 0.34) 43%, rgba(13, 36, 56, 0.04) 72%),
-    url("/fiber-hero-minimal.png") center / cover no-repeat;
+    url("/factory-hero-real-wide-close.png") center / cover no-repeat;
 }
 
 .home-action-grid {
