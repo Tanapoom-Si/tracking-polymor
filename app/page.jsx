@@ -340,7 +340,7 @@ function analyzeOrigin(data, traced, profile) {
 
   if (data.affectedScope === "multiple") {
     drawingScore += 28;
-    drawingReasons.push("พบ defect หลาย Can/หลายตำแหน่งในช่วงใกล้กัน จึงควรตรวจ Drawing ก่อน");
+    drawingReasons.push("พบ Defect หลาย Can/หลายตำแหน่งในช่วงใกล้กัน จึงควรตรวจ Drawing ก่อน");
   } else if (data.affectedScope === "single") {
     spinningScore += 18;
     spinningReasons.push("พบความผิดปกติใน Can ตำแหน่งเดิมซ้ำหลายครั้ง");
@@ -348,27 +348,27 @@ function analyzeOrigin(data, traced, profile) {
 
   if (data.drawingStopStart === "yes") {
     drawingScore += 18;
-    drawingReasons.push("มี stop/start หรือ change setting ก่อนพบ defect");
+    drawingReasons.push("มี Stop/Start หรือ Change setting ก่อนพบ Defect");
   }
 
   if (data.drawingTension === "swing") {
     drawingScore += 20;
-    drawingReasons.push("มี tension swing ใน Drawing");
+    drawingReasons.push("มี Tension swing ใน Drawing");
   }
 
   if (data.drawingGuide === "abnormal") {
     drawingScore += 18;
-    drawingReasons.push("พบความผิดปกติที่ guide/tow path");
+    drawingReasons.push("พบความผิดปกติที่ Guide/Tow path");
   }
 
   if (data.drawingRoller === "abnormal") {
     drawingScore += 16;
-    drawingReasons.push("พบความผิดปกติที่ roller หรือ speed ratio");
+    drawingReasons.push("พบความผิดปกติที่ Roller หรือ Speed ratio");
   }
 
   if (data.drawingCutter === "abnormal") {
     drawingScore += 16;
-    drawingReasons.push("พบความผิดปกติที่ cutter/feed ก่อนตัด");
+    drawingReasons.push("พบความผิดปกติที่ Cutter/Feed ก่อนตัด");
   }
 
   if (/tension|wrapping|guide|roller|cutter|stop|start|speed|สะดุด|แกว่ง/.test(noteText)) {
@@ -379,12 +379,12 @@ function analyzeOrigin(data, traced, profile) {
   const primary = traced[0] || null;
   if (primary && /unstable|remark|change|BCP|fluff|NG|not ok/i.test(primary.note)) {
     spinningScore += 22;
-    spinningReasons.push("Doffing record ของ Can มี remark/fluff/BCP หรือความผิดปกติ");
+    spinningReasons.push("Doffing record ของ Can มี Remark/Fluff/BCP หรือความผิดปกติ");
   }
 
   if (primary && /swing|wrapping|guide|ผิด|tension|ปัญหา|คราบ|พัน/i.test(primary.note)) {
     spinningScore += 10;
-    spinningReasons.push("หมายเหตุใน Can มีคำที่สัมพันธ์กับสภาพเส้นใยหรือ laydown");
+    spinningReasons.push("หมายเหตุใน Can มีคำที่สัมพันธ์กับสภาพเส้นใยหรือ Laydown");
   }
 
   if (profile.firstCheck.includes("Cutter") || profile.firstCheck.includes("Tow path")) {
@@ -404,7 +404,7 @@ function analyzeOrigin(data, traced, profile) {
     ? "Mixed"
     : drawingRisk > spinningRisk ? "Drawing" : "Spinning / Can";
   const firstCheck = likelyOrigin === "Drawing"
-    ? "ตรวจ Drawing condition: tension, guide, roller, cutter, stop/start"
+    ? "ตรวจ Drawing condition: Tension, Guide, Roller, Cutter, Stop/Start"
     : likelyOrigin === "Spinning / Can"
       ? ""
       : "ตรวจทั้ง Drawing condition และ Can layer ควบคู่กัน";
@@ -1356,7 +1356,7 @@ export default function HomePage() {
                       <Field id="dfSpeed" label="DF Speed" help="">
                         <TextInput form={form} id="dfSpeed" type="number" min="0.1" step="0.01" onChange={updateField} />
                       </Field>
-                      <Field id="tdr" label="TDR / Total Draw Roller" help="">
+                      <Field id="tdr" label="TDR / Total Draw Ratio" help="">
                         <TextInput form={form} id="tdr" type="number" min="0.1" step="0.01" onChange={updateField} />
                       </Field>
                       <Field id="drawLayerMinutes" label="ระยะเวลา Drawing ต่อชั้น (นาที)" help="">
@@ -1456,7 +1456,7 @@ export default function HomePage() {
                   <Field id="dfSpeed" label="DF Speed" help="">
                     <TextInput form={form} id="dfSpeed" type="number" min="0.1" step="0.01" onChange={updateField} />
                   </Field>
-                  <Field id="tdr" label="TDR / Total Draw Roller" help="">
+                  <Field id="tdr" label="TDR / Total Draw Ratio" help="">
                     <TextInput form={form} id="tdr" type="number" min="0.1" step="0.01" onChange={updateField} />
                   </Field>
                   <Field id="drawLayerMinutes" label="ระยะเวลา Drawing ต่อชั้น (นาที)" help="">
