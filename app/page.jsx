@@ -974,7 +974,7 @@ export default function HomePage() {
     [
       "1",
       "ยืนยันเวลาเก็บตัวอย่าง",
-      `พบ ${result.profile.label} วันที่ ${formatTime(result.defectTime)} ในถุง ${form.drawingLine} หลังเริ่ม Drawing ประมาณ ${result.elapsed} นาที`
+      `พบ ${result.profile.label} วันที่ ${formatTime(result.defectTime)} ในถัง ${form.drawingLine} หลังเริ่ม Drawing ประมาณ ${result.elapsed} นาที`
     ],
     [
       "2",
